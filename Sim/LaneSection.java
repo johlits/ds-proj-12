@@ -1,5 +1,4 @@
-import java.util.Vector;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Graphics2D;
 
 public class LaneSection extends CarContainer {
@@ -19,6 +18,17 @@ public class LaneSection extends CarContainer {
 	    //System.out.println("islastOne() in LaneSection not false.");
 	    return (iD == parent.getNumberOfLaneSections()-1);
 		} else return false; 
+	}
+	
+	public ArrayList<CarContainer> getAdjacent() {
+		ArrayList<CarContainer> temp = new ArrayList<CarContainer>();
+		if (iD == parent.getNumberOfLaneSections()-1) {
+			for (CarContainer c : parent.getChoices()) {
+	    		temp.add(c);
+	    	}
+		} else 
+			temp.add(parent.getLaneSection(iD+1));
+		return temp;
 	}
 
 	public CarContainer onToNext() {
@@ -43,6 +53,9 @@ public class LaneSection extends CarContainer {
 
 	public int getParentID() { return parent.getID(); }
 
+	public String toString() {
+		return "lane section " + getParentID() + "." + iD;
+	}
 }
 
 

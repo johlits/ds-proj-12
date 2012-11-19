@@ -212,8 +212,8 @@ public class Sig1JunctionModel extends JunctionModel implements Timed {
 		// e.g. if cars havn't driven off the junction in time.
 		//      or if there's no space on the other side of the junction.
 
-		lane = parent.getLane(currentcar.carPath[0].getParentID());
-		CarContainer path = currentcar.carPath[1];
+		lane = parent.getLane(currentcar.plannedPath.get(0).getParentID());
+		CarContainer path = currentcar.plannedPath.get(1);
 	
 		//Not OK to go if red light.
 		if (lightColor[lane.endJunctionSide][lane.endJunctionIndex] == 
@@ -255,7 +255,7 @@ public class Sig1JunctionModel extends JunctionModel implements Timed {
 		if (path.cars.size() == 0 && currentcar.inFrontInfo[1] < 15 &&
 				(currentcar.inFrontInfo[0]-
 				 (currentdist+currentcar.halflength+
-		 			currentcar.carPath[1].length)) < currentcar.length) return false;
+		 			currentcar.plannedPath.get(1).length)) < currentcar.length) return false;
 
 		
 		return true;

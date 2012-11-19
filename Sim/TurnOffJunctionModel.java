@@ -101,8 +101,8 @@ public class TurnOffJunctionModel extends JunctionModel implements Timed {
  
 	public boolean isOKToGo(Car car,double currentdist) {
 		
-		LaneModel lane = parent.getLane(car.carPath[0].getParentID());
-		CarContainer path = car.carPath[1];
+		LaneModel lane = parent.getLane(car.plannedPath.get(0).getParentID());
+		CarContainer path = car.plannedPath.get(1);
 
 		if (lane.endJunctionSide == priority1 ||
 				lane.endJunctionSide == priority2) {

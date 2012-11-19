@@ -1,5 +1,4 @@
-import java.util.Vector;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Graphics2D;
 
 public class JunctionPath extends CarContainer {
@@ -21,6 +20,12 @@ public class JunctionPath extends CarContainer {
 	public boolean isLastOne() {
 		return false;
 	} 
+	
+	public ArrayList<CarContainer> getAdjacent() {
+		ArrayList<CarContainer> temp = new ArrayList<CarContainer>();
+		temp.add(parent.getnextLane(endLaneID));
+		return temp;
+	}
 
 	public void drawAllGhostCars(Graphics2D g2d) {
 		final Iterator iterator = cars.iterator();
@@ -38,6 +43,8 @@ public class JunctionPath extends CarContainer {
 	public int getEndLaneID() { return endLaneID; }
 
 	public int getParentID() { return parent.getID(); }
+	
+	public String toString() { return "junction path " + getParentID() + "." + iD + "." + getEndLaneID(); }
 }
 
 

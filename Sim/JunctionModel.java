@@ -1,5 +1,4 @@
-import java.util.Vector;
-import java.util.Iterator;
+import java.util.*;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -154,6 +153,18 @@ public abstract class JunctionModel implements Timed {
 		}
 		return getRandomPath(laneID);
 	}
+	
+	public LinkedList<CarContainer> getChoices(int laneID) {
+		LinkedList<CarContainer> temp = new LinkedList<CarContainer>();
+		if (si[0]==0 && si[1]==0 && si[2]==0 && si[3]==0) 
+			return temp;
+		for (int i=0;i<maxNumRoads;i++) {
+			for (int j=0;j<pi[i];j++) {
+				if (paths[i][j].getID() == laneID) temp.add(paths[i][j]);
+			}
+		}	
+		return temp;
+	}
 
 	private JunctionPath getRandomPath(int laneID) {
 		//need to know all paths starting from "laneID"
@@ -173,6 +184,7 @@ public abstract class JunctionModel implements Timed {
 		for (int i=0;i<maxNumRoads;i++) {
 	    for (int j=0;j<pi[i];j++) {
 				paths[i][j].drawAllCars(g2d);
+				//paths[i][j].drawIDs(g2d);
 	    }
 		}
 	}

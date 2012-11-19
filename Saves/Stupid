@@ -1,5 +1,5 @@
 <xml version="1.0">
- <Road_InfraStructure Width="1377" Height="905" savedSpeed="0" savedTiming="9" BackDropFile="null">
+ <Road_InfraStructure Width="1377" Height="905" savedSpeed="0" savedTiming="8" BackDropFile="null">
   <Design_Canvass Width="1264" Height="855">
    <Junction junctionType="0" radAngle="0.0" Actuated="0" Adaptive="0" x0="168.0" y0="144.0" x1="160.0" y1="136.0" x2="168.0" y2="136.0" x3="176.0" y3="136.0" x4="176.0" y4="144.0" x5="176.0" y5="152.0" x6="168.0" y6="152.0" x7="160.0" y7="152.0" x8="160.0" y8="144.0">
    </Junction>
@@ -7,7 +7,7 @@
    </Road>
    <Road Busyness="100" Lanes="100000000" X0="168" Y0="136" X1="168" Y1="8">
    </Road>
-   <Road Busyness="100" Lanes="100000000" X0="8" Y0="144" X1="160" Y1="144">
+   <Road Busyness="50" Lanes="100000000" X0="8" Y0="144" X1="160" Y1="144">
    </Road>
   </Design_Canvass>
  </Road_InfraStructure>

@@ -1,5 +1,4 @@
-import java.util.Vector;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
@@ -55,6 +54,8 @@ public abstract class CarContainer {
 	public abstract boolean isLastOne();
 	public abstract CarContainer onToNext();
 	public abstract int getParentID();
+	
+	public abstract ArrayList<CarContainer> getAdjacent(); 
         
 	public boolean isFirstOne() {
 		return (iD == 0);

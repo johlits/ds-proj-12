@@ -2,6 +2,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.util.*;
 
 public class LaneModel {
 
@@ -68,6 +69,16 @@ public class LaneModel {
 		//endJunctionID+ " iD= "+iD);
 		return (endJunctionID==0) ? null : parent.getJunction(endJunctionID).receiveCar(iD);
 	}
+	
+	public LinkedList<CarContainer> getChoices() {
+		LinkedList<CarContainer> temp = new LinkedList<CarContainer>();
+		if (endJunctionID==0)
+			return temp;
+		for (CarContainer c : parent.getJunction(endJunctionID).getChoices(iD)) {
+			temp.add(c);
+		}
+		return temp;
+	}
 
 	public int getNumberOfLaneSections() { return numOfSections; }
 
@@ -76,6 +87,7 @@ public class LaneModel {
 		//System.out.println("  laneSecIndex= "+laneSecIndex);
 		for (int i=0;i < numOfSections; i++) {
 	    laneSections[i].drawAllCars(g2d);
+	    laneSections[i].drawIDs(g2d, iD);
 		}
 		//if (MAIN.DEBUG) {
 	  //for (int i=0;i < numOfSections; i++) {

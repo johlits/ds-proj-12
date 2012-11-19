@@ -57,7 +57,7 @@ public class GiveWayJunctionModel extends JunctionModel implements Timed {
 	public boolean isOKToGo(Car car,double currentdist) {
 
 		if (collectPhase) {
-	    LaneModel lane = parent.getLane(car.carPath[0].getParentID());
+	    LaneModel lane = parent.getLane(car.plannedPath.get(0).getParentID());
 	    if (lane.endJunctionSide == priority1 ||
 					lane.endJunctionSide == priority2) {
 				priorityQ.addElement(car);
