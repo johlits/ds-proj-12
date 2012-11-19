@@ -31,13 +31,13 @@ public class StupidCar extends Car implements Timed {
 		// find shortest path (dijkstra, no A* yet)
 		reachableCarContainers = new ArrayList<CarContainer>();
 		endPoints = new ArrayList<Edge>();
-		Queue<Edge> pq = new LinkedList<Edge>();
+		Stack<Edge> s = new Stack<Edge>();
 		
 		reachableCarContainers.add(startLane);
-		pq.add(new Edge(startLane, startLane.length, null));
+		s.push(new Edge(startLane, startLane.length, null));
 		
-		while (!pq.isEmpty()) {
-			Edge temp = pq.poll();
+		while (!s.isEmpty()) {
+			Edge temp = s.pop();
 			if (temp.cc.isLastOne()) {
 				// store the endpoints
 				endPoints.add(temp);
@@ -48,8 +48,7 @@ public class StupidCar extends Car implements Timed {
 					// if it has not been visited (O(n), can be made O(1))
 					if (!reachableCarContainers.contains(c)) {
 						reachableCarContainers.add(c);
-						System.out.println("expanding " + c);
-						pq.offer(new Edge(c, temp.d + c.length, temp));
+						s.push(new Edge(c, temp.d + c.length, temp));
 					}
 				}
 			}

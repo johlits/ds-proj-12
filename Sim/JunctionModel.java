@@ -162,7 +162,8 @@ public abstract class JunctionModel implements Timed {
 			for (int j=0;j<pi[i];j++) {
 				if (paths[i][j].getID() == laneID) temp.add(paths[i][j]);
 			}
-		}	
+		}
+		Collections.shuffle(temp);	
 		return temp;
 	}
 

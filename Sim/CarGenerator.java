@@ -50,9 +50,9 @@ public class CarGenerator implements Timed {
 	    if (startLanes[i].carQueue > 0) {
 		Car c;
 		if (speedLimited) {
-		    c = new SmartCar(startLanes[i].getStartingLaneSection(),this,ticker,topSpeed);
+		    c = new StupidCar(startLanes[i].getStartingLaneSection(),this,ticker,topSpeed);
 		} else {
-		    c = new SmartCar(startLanes[i].getStartingLaneSection(),this,ticker, 
+		    c = new StupidCar(startLanes[i].getStartingLaneSection(),this,ticker, 
 				topSpeed+(int)(Math.random()*11.0));
 		}
 		if (c.checkSetUp()) startLanes[i].carQueue--;
