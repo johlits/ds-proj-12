@@ -1,0 +1,132 @@
+<xml version="1.0">
+ <Road_InfraStructure Width="1377" Height="905" savedSpeed="0" savedTiming="21" BackDropFile="null">
+  <Design_Canvass Width="1264" Height="855">
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="736.0" y0="360.0" x1="716.0" y1="326.0" x2="736.0" y2="326.0" x3="756.0" y3="326.0" x4="756.0" y4="360.0" x5="756.0" y5="394.0" x6="736.0" y6="394.0" x7="716.0" y7="394.0" x8="716.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="352.0" y0="360.0" x1="332.0" y1="326.0" x2="352.0" y2="326.0" x3="372.0" y3="326.0" x4="372.0" y4="360.0" x5="372.0" y5="394.0" x6="352.0" y6="394.0" x7="332.0" y7="394.0" x8="332.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="904.0" y0="488.0" x1="884.0" y1="468.0" x2="904.0" y2="468.0" x3="924.0" y3="468.0" x4="924.0" y4="488.0" x5="924.0" y5="508.0" x6="904.0" y6="508.0" x7="884.0" y7="508.0" x8="884.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="736.0" y0="488.0" x1="716.0" y1="468.0" x2="736.0" y2="468.0" x3="756.0" y3="468.0" x4="756.0" y4="488.0" x5="756.0" y5="508.0" x6="736.0" y6="508.0" x7="716.0" y7="508.0" x8="716.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="520.0" y0="488.0" x1="500.0" y1="468.0" x2="520.0" y2="468.0" x3="540.0" y3="468.0" x4="540.0" y4="488.0" x5="540.0" y5="508.0" x6="520.0" y6="508.0" x7="500.0" y7="508.0" x8="500.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="352.0" y0="488.0" x1="332.0" y1="468.0" x2="352.0" y2="468.0" x3="372.0" y3="468.0" x4="372.0" y4="488.0" x5="372.0" y5="508.0" x6="352.0" y6="508.0" x7="332.0" y7="508.0" x8="332.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="176.0" y0="488.0" x1="156.0" y1="468.0" x2="176.0" y2="468.0" x3="196.0" y3="468.0" x4="196.0" y4="488.0" x5="196.0" y5="508.0" x6="176.0" y6="508.0" x7="156.0" y7="508.0" x8="156.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="352.0" y0="224.0" x1="332.0" y1="204.0" x2="352.0" y2="204.0" x3="372.0" y3="204.0" x4="372.0" y4="224.0" x5="372.0" y5="244.0" x6="352.0" y6="244.0" x7="332.0" y7="244.0" x8="332.0" y8="224.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="520.0" y0="360.0" x1="500.0" y1="326.0" x2="520.0" y2="326.0" x3="540.0" y3="326.0" x4="540.0" y4="360.0" x5="540.0" y5="394.0" x6="520.0" y6="394.0" x7="500.0" y7="394.0" x8="500.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="520.0" y0="224.0" x1="500.0" y1="204.0" x2="520.0" y2="204.0" x3="540.0" y3="204.0" x4="540.0" y4="224.0" x5="540.0" y5="244.0" x6="520.0" y6="244.0" x7="500.0" y7="244.0" x8="500.0" y8="224.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="736.0" y0="224.0" x1="716.0" y1="204.0" x2="736.0" y2="204.0" x3="756.0" y3="204.0" x4="756.0" y4="224.0" x5="756.0" y5="244.0" x6="736.0" y6="244.0" x7="716.0" y7="244.0" x8="716.0" y8="224.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="904.0" y0="224.0" x1="884.0" y1="204.0" x2="904.0" y2="204.0" x3="924.0" y3="204.0" x4="924.0" y4="224.0" x5="924.0" y5="244.0" x6="904.0" y6="244.0" x7="884.0" y7="244.0" x8="884.0" y8="224.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="904.0" y0="360.0" x1="884.0" y1="326.0" x2="904.0" y2="326.0" x3="924.0" y3="326.0" x4="924.0" y4="360.0" x5="924.0" y5="394.0" x6="904.0" y6="394.0" x7="884.0" y7="394.0" x8="884.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="1072.0" y0="224.0" x1="1052.0" y1="204.0" x2="1072.0" y2="204.0" x3="1092.0" y3="204.0" x4="1092.0" y4="224.0" x5="1092.0" y5="244.0" x6="1072.0" y6="244.0" x7="1052.0" y7="244.0" x8="1052.0" y8="224.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="1072.0" y0="488.0" x1="1052.0" y1="468.0" x2="1072.0" y2="468.0" x3="1092.0" y3="468.0" x4="1092.0" y4="488.0" x5="1092.0" y5="508.0" x6="1072.0" y6="508.0" x7="1052.0" y7="508.0" x8="1052.0" y8="488.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="1072.0" y0="360.0" x1="1052.0" y1="326.0" x2="1072.0" y2="326.0" x3="1092.0" y3="326.0" x4="1092.0" y4="360.0" x5="1092.0" y5="394.0" x6="1072.0" y6="394.0" x7="1052.0" y7="394.0" x8="1052.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="176.0" y0="360.0" x1="156.0" y1="326.0" x2="176.0" y2="326.0" x3="196.0" y3="326.0" x4="196.0" y4="360.0" x5="196.0" y5="394.0" x6="176.0" y6="394.0" x7="156.0" y7="394.0" x8="156.0" y8="360.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="176.0" y0="224.0" x1="156.0" y1="204.0" x2="176.0" y2="204.0" x3="196.0" y3="204.0" x4="196.0" y4="224.0" x5="196.0" y5="244.0" x6="176.0" y6="244.0" x7="156.0" y7="244.0" x8="156.0" y8="224.0">
+   </Junction>
+   <Road Busyness="100" Lanes="111110000" X0="196" Y0="360" X1="332" Y1="360">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="372" Y0="360" X1="500" Y1="360">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="756" Y0="360" X1="884" Y1="360">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="924" Y0="360" X1="1052" Y1="360">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="176" Y0="394" X1="176" Y1="468">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="196" Y0="488" X1="332" Y1="488">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="352" Y0="394" X1="352" Y1="468">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="540" Y0="360" X1="716" Y1="360">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="520" Y0="394" X1="520" Y1="468">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="736" Y0="394" X1="736" Y1="468">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="904" Y0="394" X1="904" Y1="468">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="1072" Y0="394" X1="1072" Y1="468">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="500" Y0="488" X1="372" Y1="488">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="540" Y0="488" X1="716" Y1="488">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="756" Y0="488" X1="884" Y1="488">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="924" Y0="488" X1="1052" Y1="488">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="904" Y0="508" X1="904" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="736" Y0="508" X1="736" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="520" Y0="508" X1="520" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="352" Y0="508" X1="352" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="1072" Y0="508" X1="1080" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="176" Y0="508" X1="168" Y1="840">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="176" Y0="204" X1="176" Y1="8">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="352" Y0="204" X1="352" Y1="8">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="520" Y0="204" X1="520" Y1="8">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="736" Y0="204" X1="736" Y1="8">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="904" Y0="204" X1="904" Y1="8">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="1072" Y0="204" X1="1072" Y1="8">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="332" Y0="224" X1="196" Y1="224">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="176" Y0="244" X1="176" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="352" Y0="244" X1="352" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="500" Y0="224" X1="372" Y1="224">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="520" Y0="244" X1="520" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="716" Y0="224" X1="540" Y1="224">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="884" Y0="224" X1="756" Y1="224">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="736" Y0="244" X1="736" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="1052" Y0="224" X1="924" Y1="224">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="904" Y0="244" X1="904" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111000000" X0="1072" Y0="244" X1="1072" Y1="326">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="1092" Y0="360" X1="1256" Y1="360">
+   </Road>
+   <Road Busyness="100" Lanes="111110000" X0="8" Y0="360" X1="156" Y1="360">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="156" Y0="224" X1="8" Y1="192">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="156" Y0="488" X1="8" Y1="520">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="1092" Y0="488" X1="1256" Y1="544">
+   </Road>
+   <Road Busyness="300" Lanes="111000000" X0="1092" Y0="224" X1="1256" Y1="192">
+   </Road>
+  </Design_Canvass>
+ </Road_InfraStructure>
+</xml>

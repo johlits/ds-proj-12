@@ -1,0 +1,28 @@
+<HTML>
+<HEAD>
+      <TITLE>VISSIM APPLET</TITLE>
+</HEAD>
+<BODY>
+
+<OBJECT classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+    width="600" height="600" align="baseline" 
+    archive="test.jar" specFile="test"
+    codebase="http://java.sun.com/products/plugin/1.3/jinstall-13-win32.cab#Version=1,3,0,0">
+<PARAM NAME="code" VALUE="Main.class">
+<PARAM NAME="type" VALUE="application/x-java-applet;version=1.3">
+<PARAM NAME="scriptable" VALUE="true">
+<PARAM NAME="specFile" VALUE="test">
+<PARAM NAME="archive" VALUE="test.jar">
+<COMMENT>
+    <EMBED type="application/x-java-applet;version=1.3" 
+     width="600" height="600" align="baseline" 
+     specFile="test" code="Main.class" archive="test.jar"
+     pluginspage="http://java.sun.com/products/plugin/1.3/plugin-install.html">
+     <NOEMBED>
+</COMMENT>
+           No Java 2 SDK, Standard Edition v 1.3 support for APPLET!!
+     </NOEMBED>
+    </EMBED>
+</OBJECT>
+</body>
+</html>

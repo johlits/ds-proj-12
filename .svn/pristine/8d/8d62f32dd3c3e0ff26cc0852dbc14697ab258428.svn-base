@@ -1,0 +1,18 @@
+<xml version="1.0">
+ <Road_InfraStructure Width="1083" Height="701" savedSpeed="0" savedTiming="1" BackDropFile="null">
+  <Design_Canvass Width="972" Height="678">
+   <Junction junctionType="4" radAngle="0.0" Actuated="0" Adaptive="0" x0="424.0" y0="504.0" x1="416.0" y1="442.0" x2="424.0" y2="442.0" x3="432.0" y3="442.0" x4="432.0" y4="504.0" x5="432.0" y5="566.0" x6="424.0" y6="566.0" x7="416.0" y7="566.0" x8="416.0" y8="504.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="-0.05352026845931512" Actuated="1" Adaptive="0" x0="136.0" y0="208.0" x1="70.7721" y1="149.40544" x2="132.68333" y2="146.08878" x3="194.59456" y3="142.77211" x4="197.91122" y4="204.68333" x5="201.22789" y5="266.59454" x6="139.31667" y6="269.91122" x7="77.40545" y7="273.2279" x8="74.088776" y8="211.31667">
+   </Junction>
+   <Road Busyness="100" Lanes="111111111" X0="432" Y0="504" X1="816" Y1="480" X2="792" Y2="216" X3="456" Y3="192" X4="197" Y4="204">
+   </Road>
+   <Road Busyness="100" Lanes="111111111" X0="416" Y0="504" X1="152" Y1="488" X2="139" Y2="269">
+   </Road>
+   <Road Busyness="10" Lanes="110101010" X0="8" Y0="216" X1="74" Y1="211">
+   </Road>
+   <Road Busyness="10" Lanes="110101010" X0="120" Y0="8" X1="132" Y1="146">
+   </Road>
+  </Design_Canvass>
+ </Road_InfraStructure>
+</xml>
