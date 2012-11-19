@@ -28,7 +28,7 @@ public class StupidCar extends Car implements Timed {
 	}
 	
 	public void init(CarContainer startLane) {
-		// find shortest path (dijkstra, no A* yet)
+		// find a path (stack based)
 		reachableCarContainers = new ArrayList<CarContainer>();
 		endPoints = new ArrayList<Edge>();
 		Stack<Edge> s = new Stack<Edge>();

@@ -23,11 +23,11 @@ public class SmartCar extends Car implements Timed {
 						 TimeManager theTick, int topspeed) {
      
 		super(startLane, parent, theTick, topspeed);
-		init();
+		init(startLane);
 
 	}
 	
-	public void init() {
+	public void init(CarContainer startLane) {
 		// find shortest path (dijkstra, no A* yet)
 		reachableCarContainers = new ArrayList<CarContainer>();
 		endPoints = new ArrayList<Edge>();

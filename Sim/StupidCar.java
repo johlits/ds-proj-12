@@ -63,9 +63,9 @@ public class StupidCar extends Car implements Timed {
 		plannedPath.addFirst(plannedPath.removeLast());
 		
 		// print the path
-		System.out.println("--- PATH ---");
-		for (CarContainer c : plannedPath)
-			System.out.println(c);
+		// System.out.println("--- PATH ---");
+		// for (CarContainer c : plannedPath)
+		//	System.out.println(c);
 		
 		addCar();
 	}
