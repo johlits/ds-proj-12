@@ -1,0 +1,26 @@
+<xml version="1.0">
+ <Road_InfraStructure Width="713" Height="650" savedSpeed="0" savedTiming="50" BackDropFile="null">
+  <Design_Canvass Width="600" Height="600">
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="328.0" y0="256.0" x1="320.0" y1="248.0" x2="328.0" y2="248.0" x3="336.0" y3="248.0" x4="336.0" y4="256.0" x5="336.0" y5="264.0" x6="328.0" y6="264.0" x7="320.0" y7="264.0" x8="320.0" y8="256.0">
+   </Junction>
+   <Junction junctionType="5" radAngle="0.0" Actuated="0" Adaptive="0" x0="208.0" y0="376.0" x1="200.0" y1="368.0" x2="208.0" y2="368.0" x3="216.0" y3="368.0" x4="216.0" y4="376.0" x5="216.0" y5="384.0" x6="208.0" y6="384.0" x7="200.0" y7="384.0" x8="200.0" y8="376.0">
+   </Junction>
+   <Junction junctionType="0" radAngle="0.0" Actuated="0" Adaptive="0" x0="264.0" y0="184.0" x1="256.0" y1="176.0" x2="264.0" y2="176.0" x3="272.0" y3="176.0" x4="272.0" y4="184.0" x5="272.0" y5="192.0" x6="264.0" y6="192.0" x7="256.0" y7="192.0" x8="256.0" y8="184.0">
+   </Junction>
+   <Junction junctionType="0" radAngle="0.0" Actuated="0" Adaptive="0" x0="272.0" y0="456.0" x1="264.0" y1="448.0" x2="272.0" y2="448.0" x3="280.0" y3="448.0" x4="280.0" y4="456.0" x5="280.0" y5="464.0" x6="272.0" y6="464.0" x7="264.0" y7="464.0" x8="264.0" y8="456.0">
+   </Junction>
+   <Road Busyness="100" Lanes="100000000" X0="272" Y0="592" X1="272" Y1="464">
+   </Road>
+   <Road Busyness="100" Lanes="100000000" X0="264" Y0="176" X1="264" Y1="8">
+   </Road>
+   <Road Busyness="100" Lanes="100000000" X0="208" Y0="368" X1="256" Y1="184">
+   </Road>
+   <Road Busyness="100" Lanes="100000000" X0="328" Y0="248" X1="272" Y1="184">
+   </Road>
+   <Road Busyness="100" Lanes="100000000" X0="280" Y0="456" X1="328" Y1="264">
+   </Road>
+   <Road Busyness="100" Lanes="100000000" X0="264" Y0="456" X1="208" Y1="384">
+   </Road>
+  </Design_Canvass>
+ </Road_InfraStructure>
+</xml>

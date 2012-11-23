@@ -175,10 +175,6 @@ public abstract class JunctionModel implements Timed {
 	public int getLightCycle(CarContainer cc) {
 		return 0;
 	}
-	
-	public int getLightStart(CarContainer cc) {
-		return 0;
-	}
 
 	private JunctionPath getRandomPath(int laneID) {
 		//need to know all paths starting from "laneID"

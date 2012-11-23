@@ -13,7 +13,7 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Line2D;
 import java.awt.BasicStroke;
 import java.awt.Image;
-import java.util.*;
+
 import Utils.*;
 import XML.*;
 

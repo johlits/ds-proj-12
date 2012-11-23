@@ -17,7 +17,6 @@ public abstract class CarContainer {
 	double radAngle;
 	int iD;
 	int lightCycle = -1;
-	int lightStart = -1;
 
 	Vector cars = new Vector(); //Cars on this lane.
  

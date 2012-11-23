@@ -118,8 +118,8 @@ public class Sig1JunctionModel extends JunctionModel implements Timed {
 	public int getLightStart(CarContainer cc) {
 		LaneModel lane1 = parent.getLane(cc.getParentID());
 		if (startColors[lane1.endJunctionSide][lane1.endJunctionIndex] == Color.red) 
-			return 1;
-		return 0;
+			return 0;
+		return 1;
 	}
 
 	public void pretick() {

@@ -54,8 +54,7 @@ public class Sig2JunctionModel extends Sig1JunctionModel implements Timed {
 		trafficLightArea = new Rectangle2D[maxNumRoads][maxNum];
 		lightColor = new Color[maxNumRoads][maxNum];
 		startColors = new Color[maxNumRoads][maxNum];
-		//lightTimer = (int)(Math.random()*(lightTime-1));
-		lightTimer = 0;
+		lightTimer = (int)(Math.random()*(lightTime-1));
 
 		//Place Traffic lights at junction inputs
 		for (int i=0;i<maxNumRoads;i++) {

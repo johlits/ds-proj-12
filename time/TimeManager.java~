@@ -20,7 +20,7 @@ public class TimeManager extends Thread
 	 *
 	 * @param d a int that specifies the delay in millisecond between each clock tick of this timer.
 	 */
-	public TimeManager(int d) {delay = d; }
+	public TimeManager(int d) {delay = d; ticks = 0;}
     
 	/**
 	 * Method to add an object to the timer
@@ -29,6 +29,7 @@ public class TimeManager extends Thread
 	 */
 	public void addTimed(Timed el) {
 		clocked = ImmutableList.add(clocked,el);
+		ticks = 0;
 	}
     
 	/**
