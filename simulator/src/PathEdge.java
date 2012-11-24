@@ -13,6 +13,13 @@ public class PathEdge implements Comparable<PathEdge> {
 		this.congestion = congestion;
 	}
 	
+	public PathEdge (PathEdge prev, int distance, Edge edge) {
+		this.prev = prev;
+		this.distance = distance;
+		this.edge = edge;
+		this.congestion = 0;
+	}
+	
 	public PathEdge getPrev() {
 		return prev;
 	}
