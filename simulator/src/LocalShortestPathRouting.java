@@ -5,6 +5,7 @@ import java.util.Stack;
 
 
 public class LocalShortestPathRouting implements RoutingAlgorithm {
+	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		Edge edge = vehicle.getPosition();
@@ -31,6 +32,12 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 		PathEdge ptr;
 		for (ptr = target; ptr.getPrev() != spawn; ptr = ptr.getPrev());
 		return ptr.getEdge();
+	}
+
+	@Override
+	public void init(Vehicle[] vehicles) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

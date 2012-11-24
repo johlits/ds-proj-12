@@ -35,7 +35,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 				if (visited.contains(e)) continue;
 				int dist = current.getEdge().getDistance() + e.getDistance();
 				if (e.getTrafficLight() != null)
-					dist += e.getTrafficLight().remainingWaitingTime(dist);
+					dist += e.getTrafficLight().remainingWaitingTime(dist + tick);
 				
 				// get congestion
 				congestion = 0;
@@ -93,5 +93,10 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 		    result = 31 * result + (int) (t ^ (t >>> 32));
 		    return result;
 		}
+	}
+	@Override
+	public void init(Vehicle[] vehicles) {
+		// TODO Auto-generated method stub
+		
 	}
 }

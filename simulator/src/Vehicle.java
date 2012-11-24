@@ -42,7 +42,7 @@ public class Vehicle {
 					position = null;
 					return;
 				}
-				Edge next = routing.nextEdge(this, tick);	
+				Edge next = routing.nextEdge(this, tick);
 				if (next.getVehicleCount() < next.getCapacity()) {
 					/* move to next road fragment (edge) */
 					position.removeVehicle(this);

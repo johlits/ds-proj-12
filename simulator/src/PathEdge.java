@@ -4,6 +4,9 @@ public class PathEdge implements Comparable<PathEdge> {
 	private int distance;
 	private Edge edge;
 	private int congestion;
+	/**
+	 * constant value for A*
+	 */
 	private static final int K = 10;
 	
 	public PathEdge (PathEdge prev, int distance, Edge edge, int congestion) {
@@ -28,7 +31,7 @@ public class PathEdge implements Comparable<PathEdge> {
 		return distance;
 	}
 	
-	public int weigh() {
+	public int getWeight() {
 		return distance + congestion*K; 
 	}
 	
@@ -37,6 +40,6 @@ public class PathEdge implements Comparable<PathEdge> {
 	}
 	
 	public int compareTo(PathEdge e) {
-		return (weigh() > e.weigh()) ? 1 : -1;
+		return (getWeight() > e.getWeight()) ? 1 : -1;
 	}
 }

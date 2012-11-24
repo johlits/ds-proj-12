@@ -87,7 +87,9 @@ public class SimulationRun {
 	
 	public static void main(String[] args) {
 		Simulation sim = loadSimulation();
-		
-		sim.finish();
+		sim.visualize();
+		sim.progress();
+		sim.visualize();
+		//sim.finish();
 	}
 }

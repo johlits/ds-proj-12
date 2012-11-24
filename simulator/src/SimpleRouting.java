@@ -32,4 +32,10 @@ public class SimpleRouting implements RoutingAlgorithm {
 		return ptr.getEdge();
 	}
 
+	@Override
+	public void init(Vehicle[] vehicles) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

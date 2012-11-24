@@ -23,6 +23,7 @@ public class Simulation {
 			this.vehicles.add(vehicles[i]);
 		this.time = 0;
 		this.routing = routing;
+		routing.init(vehicles);
 	}
 	
 	public void visualize () {
