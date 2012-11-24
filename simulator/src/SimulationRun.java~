@@ -81,7 +81,7 @@ public class SimulationRun {
 		c.addVehicle(vb);
 		
 		Graph graph = new Graph(new Node[] { A, B, C, D, E, F, G, H, I, J, K, L });
-		Simulation sim = new Simulation(graph, new Vehicle[] { va, vb }, new LocalShortestPathRoutingWithTrafficLightsAndReservation());
+		Simulation sim = new Simulation(graph, new Vehicle[] { va, vb }, new LocalShortestPathRoutingWithTrafficLightsWithReservation());
 		return sim;
 	}
 	

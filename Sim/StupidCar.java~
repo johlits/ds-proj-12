@@ -61,6 +61,8 @@ public class StupidCar extends Car implements Timed {
 			temp = temp.prev;
 		}
 		
+		
+		
 		plannedPath.addFirst(plannedPath.removeLast());
 		
 		// print the path
