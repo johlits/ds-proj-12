@@ -1,12 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Edge {
 	private int distance;
 	private int capacity;
 	private TrafficLight trafficlight;
-	private List<Vehicle> vehicles;
+	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
 	private Node in;
 	private Node out;
 	
@@ -21,9 +20,16 @@ public class Edge {
 		this.distance = distance;
 		this.capacity = capacity;
 		this.trafficlight = trafficlight;
-		this.vehicles = new ArrayList<Vehicle>();
 		this.in = in;
 		this.out = out;
+	}
+	
+	public Edge (Node in, Node out, AttributeSet attr) {
+		this.in = in;
+		this.out = out;
+		this.distance = attr.distance;
+		this.capacity = attr.capacity;
+		this.trafficlight = new TrafficLight(attr.trafficLightOffset, attr.trafficLightGreenCycle, attr.trafficLightRedCycle);
 	}
 	
 	/* simplified constructor for dijkstra usage */
@@ -47,6 +53,10 @@ public class Edge {
 	
 	public TrafficLight getTrafficLight () {
 		return trafficlight;
+	}
+	
+	public void setTrafficLight (TrafficLight trafficlight) {
+		this.trafficlight = trafficlight;
 	}
 	
 	public void addVehicle (Vehicle v) {

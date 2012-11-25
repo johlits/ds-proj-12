@@ -26,8 +26,9 @@ public class Simulation {
 		routing.init(vehicles);
 	}
 	
-	public void visualize () {
-		String dot = graph.toDot(time);
+	public String visualize () {
+		String dot = graph.toDot(this.time);
+		String url = null;
 		try {
 			Process p = Runtime.getRuntime().exec("dot -Tsvg");
 			OutputStream o = p.getOutputStream();
@@ -43,12 +44,29 @@ public class Simulation {
 			}
 			i.close();
 			buffout.close();
-			Process r = Runtime.getRuntime().exec(new String[] { "chromium-browser", temp.getPath() });
+			url = temp.getPath();
 			p.destroy();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
+	
+	public String save (String txt) {
+		File temp;
+		String url = null;
+		try {
+			temp = File.createTempFile("temp",".svg");
+			FileWriter fileoutput = new FileWriter(temp);
+			BufferedWriter buffout = new BufferedWriter(fileoutput);
+			buffout.write(txt);
+			buffout.close();
+			url = temp.getPath();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return url;
 	}
 	
 	public void progress () {
@@ -65,6 +83,14 @@ public class Simulation {
 		while (vehicles.size() > 0)
 			progress ();
 		System.out.printf("steps: %d\n", this.time);
+	}
+	
+	public boolean isFinished () {
+		return vehicles.size() == 0;
+	}
+	
+	public int getTick () {
+		return this.time;
 	}
 	
 	public void printStatus () {
