@@ -8,15 +8,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 public class Simulation {
 	private Graph graph;
 	private int time;
 	private List<Vehicle> vehicles;
 	private RoutingAlgorithm routing;
-	
-	public Simulation (Graph graph, Vehicle[] vehicles, RoutingAlgorithm routing) {
+
+	public Simulation(Graph graph, Vehicle[] vehicles, RoutingAlgorithm routing) {
 		this.graph = graph;
 		this.vehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < vehicles.length; i++)
@@ -26,16 +26,21 @@ public class Simulation {
 		routing.init(vehicles);
 	}
 	
-	public String visualize () {
+	public List<Vehicle> getVehicles () {
+		return vehicles;
+	} 
+
+	public String visualize() {
 		String dot = graph.toDot(this.time);
 		String url = null;
 		try {
 			Process p = Runtime.getRuntime().exec("dot -Tsvg");
 			OutputStream o = p.getOutputStream();
-			BufferedReader i = new BufferedReader( new InputStreamReader (p.getInputStream() ) );
+			BufferedReader i = new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
 			o.write(dot.getBytes());
 			o.close();
-			File temp = File.createTempFile("temp",".svg");
+			File temp = File.createTempFile("temp", ".svg");
 			FileWriter fileoutput = new FileWriter(temp);
 			BufferedWriter buffout = new BufferedWriter(fileoutput);
 			String line = "";
@@ -51,64 +56,99 @@ public class Simulation {
 		}
 		return url;
 	}
-	
-	public String save (String txt) {
+
+	public String save(String txt) {
 		File temp;
 		String url = null;
 		try {
-			temp = File.createTempFile("temp",".svg");
+			temp = File.createTempFile("temp", ".svg");
 			FileWriter fileoutput = new FileWriter(temp);
 			BufferedWriter buffout = new BufferedWriter(fileoutput);
 			buffout.write(txt);
 			buffout.close();
 			url = temp.getPath();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return url;
 	}
-	
-	public void progress () {
-		ArrayList<Vehicle> delete = new ArrayList<Vehicle>();
-		for (Vehicle v : vehicles) {
-			v.move (time, routing);
-			if (v.getPosition() == null) delete.add(v);
-		}
-		vehicles.removeAll(delete);
-		++this.time;
+
+	public void progress() {
+		progress(null);
 	}
 	
-	public void finish () {
+	public void progress(MovementRequestApplyHandler handler) {
+		List<MovementRequest> requests = new ArrayList<MovementRequest>();
+		for (Vehicle v : vehicles)
+			requests.add(v.move(time, routing));
+		resolveMovements(requests);
+		for (MovementRequest r : requests) {
+			if (r.getType() == MovementRequest.MovementType.FINISH)
+				vehicles.remove(r.getVehicle());
+			r.getVehicle().apply(r);
+			if (handler != null)
+				handler.apply(r);
+		}
+		++time;
+	}
+
+	private void resolveMovements (List<MovementRequest> requests) {
+		for (boolean done = false; !done; done = true) {
+			for (MovementRequest r : requests) {
+				if (r.getType() == MovementRequest.MovementType.MOVE) {
+					Edge edge = r.getVehicle().getPosition();
+					List<MovementRequest> same = new ArrayList<MovementRequest>();
+					int delta = 0;
+					for (MovementRequest r2 : requests)
+						if (edge == r2.getTarget())
+							if (r2.getType() == MovementRequest.MovementType.MOVE && r2.getTo() == r.getTo())
+								same.add(r2);
+							else if (r2.getType() == MovementRequest.MovementType.STAY &&
+								r.getTo() == r2.getVehicle().getMilage())
+								++delta;
+							else if (r2.getType() == MovementRequest.MovementType.FINISH &&
+									r2.getVehicle().getMilage() == r.getTo())
+								--delta;
+					if ((done = same.size() + delta > edge.getCapacity()))
+						continue;
+					while (same.size() + delta > edge.getCapacity())
+						same.remove(new Random().nextInt(same.size())).stay();
+					break;
+				}
+			}
+		}
+	}
+
+	public void finish() {
 		while (vehicles.size() > 0)
-			progress ();
+			progress();
 		System.out.printf("steps: %d\n", this.time);
 	}
-	
-	public boolean isFinished () {
+
+	public boolean isFinished() {
 		return vehicles.size() == 0;
 	}
-	
-	public int getTick () {
+
+	public int getTick() {
 		return this.time;
 	}
-	
-	public void printStatus () {
+
+	public void printStatus() {
 		Node[] nodes = graph.getNodes();
 		for (Node node : nodes) {
 			System.out.println("*** Node ***");
 			Edge[] incoming = node.getIncomingEdges();
 			System.out.printf("incoming edges: %d\n", incoming.length);
 			for (Edge e : incoming) {
-				System.out.printf(" edge, vehicles: %d, traffic light? %s\n",
-						e.getVehicleCount(),
+				System.out.printf(" edge, vehicles: %d, traffic light? %s\n", e
+						.getVehicleCount(),
 						e.getTrafficLight() == null ? "false" : "true");
 			}
 			Edge[] outgoing = node.getOutgoingEdges();
 			System.out.printf("outgoing edges: %d\n", incoming.length);
 			for (Edge e : outgoing) {
-				System.out.printf(" edge, vehicles: %d, traffic light? %s\n",
-						e.getVehicleCount(),
+				System.out.printf(" edge, vehicles: %d, traffic light? %s\n", e
+						.getVehicleCount(),
 						e.getTrafficLight() == null ? "false" : "true");
 			}
 		}

@@ -13,9 +13,13 @@ import java.util.regex.Pattern;
 
 import javax.print.AttributeException;
 
-public class ManhattenLayout {
+public class ManhattenLayout implements MovementRequestApplyHandler {
 	private Node[][] matrix;
 	private Simulation simulation;
+	
+	/* record movements */
+	private int tick = 0;
+	private Stack<Stack<MovementRequest>> events;
 
 	private final String svgheader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 			+ "<svg xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns=\"http://www.w3.org/2000/svg\" height=\"900\" width=\"1440\" version=\"1.1\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n"
@@ -61,7 +65,7 @@ public class ManhattenLayout {
 			+ " </defs>\n"
 			+ "\n"
 			+ "<g transform=\"scale(5,5)\">\n"
-			+ " <g transform=\"translate(5, 5)\">";
+			+ " <g id=\"main\" transform=\"translate(5, 5)\">";
 	final float carWidth = 5;
 	final float carLength = 7;
 	final float edgeWidth = 7;
@@ -77,6 +81,8 @@ public class ManhattenLayout {
 
 	public ManhattenLayout(Node[][] matrix) {
 		this.matrix = matrix;
+		this.events = new Stack<Stack<MovementRequest>>();
+		events.add(new Stack<MovementRequest>());
 	}
 
 	class VerticalConnection {
@@ -333,6 +339,7 @@ public class ManhattenLayout {
 							0);
 				}
 				/* traffic lights */
+				/* TODO compute cycles up to tick */
 				TrafficLight t = edge.getTrafficLight();
 				if (t != null)
 					s += putLights(t.isGreen(tick) ? "green" : "red", x + j
@@ -343,7 +350,7 @@ public class ManhattenLayout {
 		return s;
 	}
 
-	public String toSVG(int tick) {
+	public String toSVG(int tick, boolean wholeDoc) {
 		float x = 0;
 		float y = 0;
 		String s = "";
@@ -366,7 +373,7 @@ public class ManhattenLayout {
 							rotate(putEdges(0, 0, matrix[r + 1][c], n, tick)));
 			}
 		}
-		return svgheader + s + "</g></g></svg>";
+		return wholeDoc ? svgheader + s + "</g></g></svg>" : s;
 	}
 
 	private String putObject(String type, float width, float height, float x,
@@ -389,5 +396,16 @@ public class ManhattenLayout {
 
 	private static String rotate(String s) {
 		return String.format("<g transform=\"rotate(90)\">%s</g>", s);
+	}
+
+	@Override
+	public void apply(MovementRequest request) {
+		events.peek().add(request);
+	}
+
+	@Override
+	public void nextTick() {
+		++tick;
+		events.add(new Stack<MovementRequest>());
 	}
 }

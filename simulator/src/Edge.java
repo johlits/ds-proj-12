@@ -13,12 +13,12 @@ public class Edge {
 	 * @param in incoming Node
 	 * @param out outgoing Node
 	 * @param distance distance between incoming and outgoing node on this edge
-	 * @param capacity amount of vehicles this edge can hold
+	 * @param capacity amount of vehicles this edge can hold per distance unit
 	 * @param trafficlight time based barrier at the end of the edge
 	 */
-	public Edge (Node in, Node out, int distance, int capacity, TrafficLight trafficlight) {
+	public Edge (Node in, Node out, int distance, int capacityPerUnit, TrafficLight trafficlight) {
 		this.distance = distance;
-		this.capacity = capacity;
+		this.capacity = capacityPerUnit;
 		this.trafficlight = trafficlight;
 		this.in = in;
 		this.out = out;

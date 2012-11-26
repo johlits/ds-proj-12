@@ -20,9 +20,10 @@ public class GraphicalUserInterface {
 		browser = new Browser(shell, SWT.NONE);
 		browser.setJavascriptEnabled(false);
 		browser.setVisible(true);
+		
 	}
 	
-	public void setURL (final String url, final String title) {
+	public void setText (final String txt, final String title) {
 		if (isAlive())
 			display.asyncExec(new Runnable() {
 				@Override
@@ -30,7 +31,17 @@ public class GraphicalUserInterface {
 					if (!shell.isDisposed())
 						shell.setText(title);
 					if (!browser.isDisposed())
-						browser.setUrl(url);
+						browser.setText(txt);
+				}});
+	}
+	
+	public void update (final String txt) {
+		if (isAlive())
+			display.asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (!browser.isDisposed())
+						browser.execute(String.format("document.getElementById('main').setInnerHTML = '%s';", txt));
 				}});
 	}
 	

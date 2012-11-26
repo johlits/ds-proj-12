@@ -17,6 +17,10 @@ public class Vehicle {
 		return milage;
 	}
 	
+	public void setMilage (int milage) {
+		this.milage = milage;
+	}
+	
 	public Edge getPosition () {
 		return position;
 	}
@@ -25,32 +29,35 @@ public class Vehicle {
 		return target;
 	}
 	
-	public void move (int tick, RoutingAlgorithm routing) {
-		/* if we have not reached the end of our current road, advance on the road fragment */
+	public MovementRequest move (int tick, RoutingAlgorithm routing) {
 		if (milage < position.getDistance()) {
-			++milage;
+			return new MovementRequest(this, milage + 1);
 		} else {
-			/* we have reached the end of our road fragment and require a decision for the next fragment.
-			 * probably we need to wait at the traffic light
-			 */
 			TrafficLight light = position.getTrafficLight();
 			if (light == null || light.isGreen(tick)) {
-				if (position.getOutgoingNode() == target) {
-					// vehicle reached goal, make it disappear
-					// TODO maybe a call to the routing, that we finished (if needed)
-					position.removeVehicle(this);
-					position = null;
-					return;
-				}
-				Edge next = routing.nextEdge(this, tick);
-				if (next.getVehicleCount() < next.getCapacity()) {
-					/* move to next road fragment (edge) */
-					position.removeVehicle(this);
-					next.addVehicle(this);
-					position = next;
-					milage = 0;
-				}
+				if (position.getOutgoingNode() == target)
+					return new MovementRequest(this, MovementRequest.MovementType.FINISH);
+				return new MovementRequest(this, routing.nextEdge(this, tick));
 			}
+			return new MovementRequest(this, MovementRequest.MovementType.STAY);
+		}
+	}
+	
+	public void apply (MovementRequest request) {
+		switch (request.getType()) {
+		case MOVE:
+			if (request.getTarget() == position) {
+				milage = request.getTo();
+			} else {
+				position.removeVehicle(this);
+				(position = request.getTarget()).addVehicle(this);
+				milage = 0;
+			}
+			break;
+		case FINISH:
+			position.removeVehicle(this);
+			position = null;
+			break;
 		}
 	}
 }
