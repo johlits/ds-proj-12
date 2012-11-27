@@ -14,6 +14,7 @@ public class Simulation {
 	private Graph graph;
 	private int time;
 	private List<Vehicle> vehicles;
+	private int vehiclecount;
 	private RoutingAlgorithm routing;
 
 	public Simulation(Graph graph, Vehicle[] vehicles, RoutingAlgorithm routing) {
@@ -21,6 +22,7 @@ public class Simulation {
 		this.vehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < vehicles.length; i++)
 			this.vehicles.add(vehicles[i]);
+		this.vehiclecount = vehicles.length;
 		this.time = 0;
 		this.routing = routing;
 		routing.init(vehicles);
@@ -80,16 +82,20 @@ public class Simulation {
 	public void progress(MovementRequestApplyHandler handler) {
 		List<MovementRequest> requests = new ArrayList<MovementRequest>();
 		for (Vehicle v : vehicles)
-			requests.add(v.move(time, routing));
+			if (v.getPosition() != null)
+				requests.add(v.move(time, routing));
 		resolveMovements(requests);
 		for (MovementRequest r : requests) {
 			if (r.getType() == MovementRequest.MovementType.FINISH)
-				vehicles.remove(r.getVehicle());
-			r.getVehicle().apply(r);
+				//vehicles.remove(r.getVehicle());
+				--vehiclecount;
 			if (handler != null)
 				handler.apply(r);
+			r.getVehicle().apply(r);
 		}
 		++time;
+		if (handler != null)
+			handler.nextTick();
 	}
 
 	private void resolveMovements (List<MovementRequest> requests) {
@@ -126,7 +132,7 @@ public class Simulation {
 	}
 
 	public boolean isFinished() {
-		return vehicles.size() == 0;
+		return vehiclecount == 0;
 	}
 
 	public int getTick() {

@@ -8,12 +8,12 @@ public class SimulationRun {
 		
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
 		
-		String str = "a { 5 1 5 5 5 } * [ 5 1 5 5 5 ] b > c < d\n" + 
+		String str = "a { 5 1 0 5 5 } * [ 5 1 0 5 5 ] b * c * d\n" + 
 				"{ 5 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" + 
 				"e * f * g * h\n" + 
 				"*   *   *  { 5 1 0 5 5 } *  [ 5 1 1 5 5 ]\n" + 
-				"i * j * k * [ 5 1 1 5 5 ] l";
-		String cars = "a b l\na e k";
+				"i * j * [ 5 1 40 5 5 ] k * [ 5 1 1 5 5 ] l";
+		String cars = "a b l\na e l";
 		
 		ManhattenLayout l = null;
 		try {
@@ -23,7 +23,15 @@ public class SimulationRun {
 		}
 		final ManhattenLayout ml = l;
 		final Simulation sim = ml.getSimulation();
-		gui.setText(ml.toSVG(0, true), "Tick 0");
+		
+		
+		while (!sim.isFinished())
+			sim.progress(ml);
+		//sim.save(ml.toSVG(0, true, true));
+		
+		
+		gui.setText(ml.toSVG(0, true, true), "simulator");
+		/*
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -34,10 +42,11 @@ public class SimulationRun {
 						e.printStackTrace();
 					}
 					sim.progress();
-					gui.setText(ml.toSVG(sim.getTick(), true),
+					gui.setText(ml.toSVG(sim.getTick(), true, false),
 							String.format("Tick %d", sim.getTick()));
 				}
 			}} ).start();
+		*/
 		gui.mainloop();		
 	}
 }

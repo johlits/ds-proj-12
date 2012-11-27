@@ -30,6 +30,8 @@ public class Vehicle {
 	}
 	
 	public MovementRequest move (int tick, RoutingAlgorithm routing) {
+		if (position == null)
+			return null;
 		if (milage < position.getDistance()) {
 			return new MovementRequest(this, milage + 1);
 		} else {
@@ -55,7 +57,7 @@ public class Vehicle {
 			}
 			break;
 		case FINISH:
-			position.removeVehicle(this);
+			//position.removeVehicle(this);
 			position = null;
 			break;
 		}

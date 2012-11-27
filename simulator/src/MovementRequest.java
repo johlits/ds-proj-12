@@ -11,6 +11,13 @@ public class MovementRequest {
 		STAY
 	}
 	
+	public MovementRequest (Vehicle vehicle, Edge target, int to) {
+		this.type = MovementType.MOVE;
+		this.vehicle = vehicle;
+		this.target = target;
+		this.to = to;		
+	}
+	
 	public MovementRequest (Vehicle vehicle, Edge target) {
 		this.type = MovementType.MOVE;
 		this.vehicle = vehicle;
