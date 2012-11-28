@@ -1,19 +1,12 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.print.AttributeException;
 
 public class ManhattenLayout implements MovementRequestApplyHandler {
+	private HashMap<String, Node> nodes;
 	private Node[][] matrix;
 	private HashMap<Edge, ManhattenPosition> edgePosition;
 	private Simulation simulation;
@@ -51,7 +44,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			"\n" + 
 			"    rect.edge { fill: #dcdee0 }\n" + 
 			"    rect.node { fill: none; stroke-width: 1 }\n" + 
-			"    rect.car { fill: #FFF; stroke-width: 0.38 }\n" + 
+			"    rect.car { fill: #FFF; fill-opacity: 0.5; stroke-width: 0.38 }\n" +
 			"    /* shared attributes */\n" + 
 			"    rect.node, rect.car { stroke: #676464 }\n" + 
 			"\n" + 
@@ -109,8 +102,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		AttributeSet down = null;
 	}
 
+	/* TODO refactor parser with callbacks */
 	public ManhattenLayout(String layout, String vehicles, RoutingAlgorithm algo) throws Exception {
-		HashMap<String, Node> nodes = new HashMap<String, Node>();
+		nodes = new HashMap<String, Node>();
 		List<List<Node>> matrix = new ArrayList<List<Node>>();
 		edgePosition = new HashMap<Edge, ManhattenPosition>();
 
@@ -175,7 +169,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 							if (scan[z>>1].equals(conn[z][0]) || scan[z>>1].equals(conn[z][1])) {
 								Edge e = (attrs[z] != null) ?
 									new Edge(rel[z], rel[z^1], attrs[z]) :
-									new Edge(rel[z], rel[z^1], 5, 5, null);
+									new Edge(rel[z], rel[z^1], 5, 1, null);
 								rel[z].addOutgoingEdge(e);
 								rel[z^1].addIncomingEdge(e);
 								ManhattenPosition mp = new ManhattenPosition(row.size(), matrix.size(), z);
@@ -302,7 +296,20 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			}
 		}
 		/* set vehicles */
-		StringTokenizer parser = new StringTokenizer(vehicles, "\n");
+		List<Vehicle> va = parseVehicleList(vehicles);
+		/* generate simulation */
+		simulation = new Simulation(
+				new Graph(nodes.values().toArray(new Node[]{})),
+				va.toArray(new Vehicle[]{}), algo);
+
+		ArrayList<Node[]> temp = new ArrayList<Node[]>();
+		for (List<Node> a : matrix)
+			temp.add(a.toArray(new Node[] {}));
+		this.matrix = temp.toArray(new Node[][] {});
+	}
+
+	private List<Vehicle> parseVehicleList (String str) {
+		StringTokenizer parser = new StringTokenizer(str, "\n");
 		ArrayList<Vehicle> va = new ArrayList<Vehicle>();
 		while (parser.hasMoreElements()) {
 			StringTokenizer st = new StringTokenizer(parser.nextToken());
@@ -316,15 +323,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 					va.add(v);
 				}
 		}
-		/* generate simulation */
-		simulation = new Simulation(
-				new Graph(nodes.values().toArray(new Node[]{})), 
-				va.toArray(new Vehicle[]{}), algo);
-
-		ArrayList<Node[]> temp = new ArrayList<Node[]>();
-		for (List<Node> a : matrix)
-			temp.add(a.toArray(new Node[] {}));
-		this.matrix = temp.toArray(new Node[][] {});
+		return va;
 	}
 
 	public Simulation getSimulation () {
@@ -338,6 +337,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		return null;
 	}
 
+	/* TODO put vehicles at the end of the xml document and set opacity of body to 0.6 */
 	private String putEdges(float x, float y, Node a, Node b, int tick, boolean anim) {
 		String s = "";
 		for (int j = 0; j < 2; j++) {
@@ -346,25 +346,24 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 				s += putObject("edge", edgeLength, edgeWidth, x, y + edgeMargin
 						+ j * (edgeMargin + edgeWidth), 0);
 				/* vehicles */
-				for (Vehicle v : edge.getVehicles()) {
-					s += putObject(
-							"car",
-							carLength,
-							carWidth,
-							x
-									+ (((float) v.getMilage()) / (float) edge
-											.getDistance())
-									* (edgeLength - carLength), y + edgeMargin
-									+ carMargin + j * (edgeMargin + edgeWidth),
-							0, anim ? records.get(v) : null);
-				}
+				if (!anim)
+					for (Vehicle v : edge.getVehicles()) {
+						s += putObject(
+								"car",
+								carLength,
+								carWidth,
+								x + 	((1-j) * (edgeLength - carLength)) + (j == 0 ? -1 : 1) *
+										(((float) v.getMilage()) / (float) edge.getDistance())* (edgeLength - carLength),
+										y + edgeMargin
+										+ carMargin + j * (edgeMargin + edgeWidth),
+								0, anim ? records.get(v) : null);
+					}
 				/* traffic lights */
-				/* TODO traffic lights via repeat attribute */
 				TrafficLight t = edge.getTrafficLight();
 				if (t != null)
 					s += putLights(t.isGreen(tick) ? "green" : "red", x + j
 							* edgeLength, y + edgeMargin + j
-							* (edgeMargin + edgeWidth), j != 0, 0, 50, anim ? t : null);
+							* (edgeMargin + edgeWidth), j != 0, 0, anim ? t : null);
 			}
 		}
 		return s;
@@ -376,6 +375,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		float x = (float)(mp.getX() + (z >> 1)) * (edgeLength + nodeSideLength) - edgeLength;
 		float y = (float)((mp.getY() - 1) - (z >> 1)) * (nodeSideLength + edgeLength + nodeBorderSize);
 		float[] results = new float[] {
+				(z & 1) * (edgeLength - carLength) + ((z & 1) == 1 ? -1 : 1) *
 				(((float) milage) / (float) e.getDistance()) * (edgeLength - carLength),
 				edgeMargin + carMargin + ((z == 0 || z == 3) ? (edgeMargin + edgeWidth) : 0f), 
 				0 };
@@ -412,6 +412,14 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 							rotate(putEdges(0, 0, matrix[r + 1][c], n, tick, anim)));
 			}
 		}
+		if (anim)
+			for (Vehicle v : records.keySet())
+				s += putObject(
+						"car",
+						carLength,
+						carWidth,
+						0, 0,
+						0, anim ? records.get(v) : null);
 		return wholeDoc ? svgheader + s + "</g></g></svg>" : s;
 	}
 
@@ -423,85 +431,92 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	private String putObject(String type, float width, float height, float x,
 			float y, float border, LinkedList<MoveEvent> events) {
 		String anims = "";
-		float px = 0, py = 0;
-		float oldh = height, oldw = width;
-		while (events != null && !events.isEmpty()) {
-			MoveEvent me = events.removeFirst();
-			float[] r = computePosition(me.getRequest().getTarget(), me.getRequest().getTo());
-			anims += String.format(
-				"  <animateMotion begin=\"%fs\" from=\"%f,%f\" to=\"%f,%f\" dur=\"1s\" fill=\"freeze\"/>\n",
-				(float)me.getTick(), px, py, r[0] - x, r[1] - y
-				);
+		if (events != null) {
+			float px = 0, py = 0, pr = 0;
+			MoveEvent first = events.removeFirst();
+			float[] r = computePosition(first.getRequest().getTarget(), first.getRequest().getTo());
 			px = r[0] - x;
 			py = r[1] - y;
-			float newh = (r[2] == 1f) ? width - border : height;
-			if (newh != oldh) {
-				anims += String.format(
-					"  <animate begin=\"%fs\" attributeType=\"XML\" attributeName=\"height\" from=\"%f\" to=\"%f\" dur=\"1s\" fill=\"freeze\" />\n",
-					(float)me.getTick(), oldh, newh
-				);
-				oldh = newh;
-			}
-			float neww = (r[2] == 0f) ? width - border : height;
-			if (neww != oldw) {
-				anims += String.format(
-					"  <animate begin=\"%fs\" attributeType=\"XML\" attributeName=\"width\" from=\"%f\" to=\"%f\" dur=\"1s\" fill=\"freeze\" />\n",
-					(float)me.getTick(), oldw, neww
-				);
-				oldw = neww;
+			pr = r[2];
+			while (!events.isEmpty()) {
+				MoveEvent me = events.removeFirst();
+				if (me.getRequest().getType() == MovementRequest.MovementType.MOVE) {
+					r = computePosition(me.getRequest().getTarget(), me.getRequest().getTo());
+					anims += String.format(
+						"  <animateMotion begin=\"%fs\" from=\"%f,%f\" to=\"%f,%f\" dur=\"1s\" fill=\"freeze\"/>\n",
+						(float)me.getTick(), px, py, r[0] - x + (r[2] * 5), r[1] - y
+						);
+					px = r[0] - x + (r[2] * 5);
+					py = r[1] - y;
+					if (pr != r[2])
+						anims += String.format(
+							"<animateTransform begin=\"%f\" type=\"rotate\" attributeName=\"transform\" attributeType=\"XML\" from=\"%d\" to=\"%d\" dur=\"1s\" fill=\"freeze\" />",
+								(float)me.getTick(), (int)pr * 90, (int)r[2] * 90);
+					pr = r[2];
+				} else if (me.getRequest().getType() == MovementRequest.MovementType.FINISH) {
+					anims += anim ("", (float)me.getTick(), 1f, "CSS", "opacity", "1", "0");
+				}
 			}
 		}
 		return String
-				.format("<rect class=\"%s\" width=\"%f\" height=\"%f\" x=\"%f\" y=\"%f\">" + anims + "</rect>\n",
-						type, width - border, height, x + (border / 2), y);
-	}
-	
-	private String anim (float start, float duration, String type, String attrname, String from, String to) {
-		return String.format("<animate begin=\"%fs\" dur=\"%fs\" fill=\"freeze\" attributeType=\"%s\" attributeName=\"%s\" from=\"%s\" to=\"%s\" />",
-				start, duration, type, attrname, from, to);
-	}
-	
-	private String[] animateLights (float start, boolean toRed) {
-		final String[] colors = { "#76e565", "#c0c0c0", "#e93134" };
-		return new String[] {
-				anim (start, 0.5f, "CSS", "opacity", "1", "0") +
-				anim (start + 0.5f, 0.5f, "CSS", "opacity", "0", "1") +
-				anim (start, 1f, "XML", "class", toRed ? "green" : "red", toRed ? "red" : "green"),
-				anim (start, 0.5f, "CSS", "fill", colors[toRed ? 0 : 2], colors[1]) +
-				anim (start + 0.5f, 0.5f, "CSS", "fill", colors[1], colors[toRed ? 2 : 0]) +
-				anim (start, 1f, "XML", "class", toRed ? "green" : "red", toRed ? "red" : "green"),
-			};
+				.format("<g transform=\"translate(%f,%f)\"><g><rect class=\"%s\" width=\"%f\" height=\"%f\" />" + anims + "</g></g>\n",
+						x + (border / 2), y, type, width - border, height);
 	}
 
-	private String putLights (String color, float x, float y, boolean flipped) {
-		return putLights(color, x, y, flipped, 0, 0, null);
+	private String anim (String id, float start, float duration, String type, String attrname, String from, String to) {
+		return anim(id, String.format("%f", start), duration, type, attrname, from, to);
 	}
 	
-	private String putLights (String color, float x, float y, boolean flipped, int fromTick, int toTick, TrafficLight t) {
+	private String anim (String id, String start, float duration, String type, String attrname, String from, String to) {
+		return String.format(" <animate id=\"%s\" begin=\"%s\" dur=\"%fs\" fill=\"freeze\" attributeType=\"%s\" attributeName=\"%s\" from=\"%s\" to=\"%s\" />\n",
+				id, start, duration, type, attrname, from, to);
+	}
+	
+	private String[] animateLights (String prefix, String start, boolean toRed) {
+		final String[] colors = { "#76e565", "#c0c0c0", "#e93134" };
+		return new String[] {
+				anim (prefix + "anim1", start, 0.5f, "CSS", "opacity", "1", "0") +
+				anim (prefix + "anim2", prefix + "anim1.end", 0.5f, "CSS", "opacity", "0", "1") +
+				anim (prefix + "anim3", start, 1f, "XML", "class", toRed ? "green" : "red", toRed ? "red" : "green"),
+				anim (prefix + "anim4", start, 0.5f, "CSS", "fill", colors[toRed ? 0 : 2], colors[1]) +
+				anim (prefix + "anim5", prefix + "anim4.end", 0.5f, "CSS", "fill", colors[1], colors[toRed ? 2 : 0]) +
+				anim (prefix + "anim6", start, 1f, "XML", "class", toRed ? "green" : "red", toRed ? "red" : "green"),
+			};
+	}
+	
+	// TODO refactor
+	private String putLights (String color, float x, float y, boolean flipped, int fromTick, TrafficLight t) {
 		String animations[] = { "", "" };
 		if (t != null) {
 			int myTick = fromTick;
 			color = t.isGreen(myTick) ? "green" : "red";
 			if (!t.isGreen(myTick)) {
 				myTick += t.remainingWaitingTime(myTick);
-				String[] r = animateLights(myTick, false);
+				String[] r = animateLights(
+					String.format("trafficLight%d_filler_", t.hashCode()),
+					String.format("%d", myTick),
+					false);
 				animations[0] += r[0];
 				animations[1] += r[1];
 				myTick += t.getGreenCycle();
 			} else
 				myTick += t.remainingTimeToNextCycle(myTick); // currently green -> skip to red
-			while (myTick <= toTick) {
-				String[] r = animateLights(myTick, true);
-				animations[0] += r[0];
-				animations[1] += r[1];
-				myTick += t.getRedCycle();
-				if (myTick > toTick)
-					break;
-				r = animateLights(myTick, false);
-				animations[0] += r[0];
-				animations[1] += r[1];
-				myTick += t.getGreenCycle();				
-			}
+
+			String[] r = animateLights(
+				String.format("trafficLight%d_red_", t.hashCode()),
+				String.format("%d; trafficLight%d_green_anim2.end + %d", myTick, t.hashCode(), t.getGreenCycle() - 1),
+				true);
+			animations[0] += r[0];
+			animations[1] += r[1];
+			myTick += t.getRedCycle();
+
+			r = animateLights(
+				String.format("trafficLight%d_green_", t.hashCode()),
+				String.format("%d; trafficLight%d_red_anim2.end + %d", myTick, t.hashCode(), t.getRedCycle() - 1),
+				false);
+			animations[0] += r[0];
+			animations[1] += r[1];
+			myTick += t.getGreenCycle();
 		}
 		
 		return translate(x, y, scale(flipped ? -1 : 1, 1, translate(-25.062f,-6.5223f,
@@ -527,8 +542,6 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 
 	@Override
 	public void apply(MovementRequest request) {
-		if (request.getType() != MovementRequest.MovementType.MOVE)
-			return;
 		if (records.get(request.getVehicle()) == null) {
 			records.put(request.getVehicle(), new LinkedList<MoveEvent>());
 			records.get(request.getVehicle()).add(
