@@ -24,7 +24,7 @@ public class Vehicle {
 	public Edge getPosition () {
 		return position;
 	}
-	
+
 	public Node getTarget () {
 		return target;
 	}
@@ -57,7 +57,7 @@ public class Vehicle {
 			}
 			break;
 		case FINISH:
-			//position.removeVehicle(this);
+			position.removeVehicle(this);
 			position = null;
 			break;
 		}
