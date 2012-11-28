@@ -1,10 +1,3 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,11 +49,5 @@ public class GraphVizGraph {
 		for (GraphVizEdge edge : edges)
 			s += edge.toString();
 		return "digraph tree {" + s + "}";
-	}
-	
-	public String toSVG () {
-		String dot = toDot();
-
-		return "";
 	}
 }

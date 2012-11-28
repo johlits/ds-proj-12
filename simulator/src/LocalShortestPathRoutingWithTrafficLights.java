@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Stack;
-
 
 public class LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
 	HashMap<Vehicle, ArrayList<PathEdge>> fixedRoutes = new HashMap<Vehicle, ArrayList<PathEdge>>();
