@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -102,7 +101,7 @@ public class Simulation {
 		for (boolean done = false; !done; done = true) {
 			for (MovementRequest r : requests) {
 				if (r.getType() == MovementRequest.MovementType.MOVE) {
-					Edge edge = r.getVehicle().getPosition();
+					Edge edge = r.getTarget();
 					List<MovementRequest> same = new ArrayList<MovementRequest>();
 					int delta = 0;
 					for (MovementRequest r2 : requests)
@@ -115,10 +114,13 @@ public class Simulation {
 							else if (r2.getType() == MovementRequest.MovementType.FINISH &&
 									r2.getVehicle().getMilage() == r.getTo())
 								--delta;
-					if ((done = same.size() + delta > edge.getCapacity()))
+					System.out.printf("same requests: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
+					if ((done = same.size() + delta <= edge.getCapacity()))
 						continue;
+					System.out.printf("rejecting out some requests ...");
 					while (same.size() + delta > edge.getCapacity())
 						same.remove(new Random().nextInt(same.size())).stay();
+					System.out.printf("after rejecting: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
 					break;
 				}
 			}
