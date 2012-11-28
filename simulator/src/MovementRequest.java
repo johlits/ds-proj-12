@@ -34,6 +34,7 @@ public class MovementRequest {
 	
 	public MovementRequest (Vehicle vehicle, MovementType type) {
 		this.vehicle = vehicle;
+		this.target = vehicle.getPosition();
 		this.type = type;
 	}
 	
