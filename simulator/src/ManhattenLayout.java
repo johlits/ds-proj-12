@@ -34,7 +34,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	private HashMap<Vehicle, LinkedList<MoveEvent>> records = new HashMap<Vehicle, LinkedList<MoveEvent>>();
 
 	private final String svgheader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-			+ "<svg xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns=\"http://www.w3.org/2000/svg\" height=\"900\" width=\"1440\" version=\"1.1\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n"
+			+ "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"900\" width=\"1440\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 			+ " <defs>\n"
 			+ "	<style type=\"text/css\"><![CDATA[\n"
 			+ "   rect { stroke-dasharray: none; stroke-miterlimit: 4px; stroke-linejoin: mitter; }\n" + 
@@ -77,8 +77,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			+ "\n"
 			+ " </defs>\n"
 			+ "\n"
-			+ "<g transform=\"scale(5,5)\">\n"
-			+ " <g id=\"main\" transform=\"translate(5, 5)\">";
+			+ "<g transform=\"scale(5,5)\">\n";
 	final float carWidth = 5;
 	final float carLength = 7;
 	final float edgeWidth = 7;
@@ -392,7 +391,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	public String toSVG(int tick, boolean wholeDoc, boolean anim) {
 		float x = 0;
 		float y = 0;
-		String s = "";
+		String s = "<g id=\"main\" transform=\"translate(5, 5)\">";
 
 		for (int r = 0; r < matrix.length; r++, y += nodeSideLength
 				+ edgeLength + nodeBorderSize) {
@@ -420,7 +419,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 						carWidth,
 						0, 0,
 						0, anim ? records.get(v) : null);
-		return wholeDoc ? svgheader + s + "</g></g></svg>" : s;
+		s += "</g>";
+		return wholeDoc ? svgheader + s + "</g></svg>" :
+			"<svg xmlns=\"http://www.w3.org/2000/svg\">" + s + "</svg>";
 	}
 
 	private String putObject(String type, float width, float height, float x,

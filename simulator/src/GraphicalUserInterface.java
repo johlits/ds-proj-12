@@ -18,7 +18,7 @@ public class GraphicalUserInterface {
 		shell.setLayout(fillLayout);
 		
 		browser = new Browser(shell, SWT.NONE);
-		browser.setJavascriptEnabled(false);
+		browser.setJavascriptEnabled(true);
 		browser.setVisible(true);
 		
 	}
@@ -35,13 +35,20 @@ public class GraphicalUserInterface {
 				}});
 	}
 	
-	public void update (final String txt) {
+	public void update (final String txt, final String title) {
 		if (isAlive())
 			display.asyncExec(new Runnable() {
 				@Override
 				public void run() {
+					String s = String.format(
+							"var n = new DOMParser().parseFromString('%s', 'text/xml').documentElement.firstChild;"+
+							"var o = document.getElementById('main');"+
+							"o.parentNode.replaceChild(document.importNode(n, true), o);",
+							txt.replace("\n", "").replace("'", "\'"));
+					if (!shell.isDisposed())
+						shell.setText(title);
 					if (!browser.isDisposed())
-						browser.execute(String.format("document.getElementById('main').setInnerHTML = '%s';", txt));
+						browser.execute(s);
 				}});
 	}
 	

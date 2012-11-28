@@ -10,7 +10,7 @@ public class SimulationRun {
 		Locale.setDefault(Locale.US);
 		
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
-		final boolean preprocessed = true;
+		final boolean preprocessed = false;
 		
 		String str = "a { 1 1 1 2 2 } * [ 1 1 0 2 2 ] b * c * d\n" +
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
@@ -48,7 +48,7 @@ public class SimulationRun {
 							e.printStackTrace();
 						}
 						sim.progress();
-						gui.setText(ml.toSVG(sim.getTick(), true, false),
+						gui.update(ml.toSVG(sim.getTick(), false, false),
 								String.format("Tick %d", sim.getTick()));
 					}
 				}} ).start();
