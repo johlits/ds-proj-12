@@ -336,7 +336,6 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		return null;
 	}
 
-	/* TODO put vehicles at the end of the xml document and set opacity of body to 0.6 */
 	private String putEdges(float x, float y, Node a, Node b, int tick, boolean anim) {
 		String s = "";
 		for (int j = 0; j < 2; j++) {
