@@ -463,11 +463,11 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 						x + (border / 2), y, type, width - border, height);
 	}
 
-	private String anim (String id, float start, float duration, String type, String attrname, String from, String to) {
+	private static String anim (String id, float start, float duration, String type, String attrname, String from, String to) {
 		return anim(id, String.format("%f", start), duration, type, attrname, from, to);
 	}
 	
-	private String anim (String id, String start, float duration, String type, String attrname, String from, String to) {
+	private static String anim (String id, String start, float duration, String type, String attrname, String from, String to) {
 		return String.format(" <animate id=\"%s\" begin=\"%s\" dur=\"%fs\" fill=\"freeze\" attributeType=\"%s\" attributeName=\"%s\" from=\"%s\" to=\"%s\" />\n",
 				id, start, duration, type, attrname, from, to);
 	}
