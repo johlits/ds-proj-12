@@ -6,9 +6,9 @@ public class SimulationRun {
 		Locale.setDefault(Locale.US);
 		
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
-		final boolean preprocessed = false;
+		final boolean preprocessed = true;
 		
-		String str = "a { 1 1 1 2 2 } * [ 1 1 0 2 2 ] b * c * d\n" +
+		String str = "a { 1 1 0 1 1 } * [ 1 1 2 1 1 ] b * c * d\n" +
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
 				"e * f * g * h\n" +
 				"*   *   *  { 1 1 0 5 5 } *  [ 1 1 1 5 5 ]\n" +

@@ -502,21 +502,17 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			} else
 				myTick += t.remainingTimeToNextCycle(myTick); // currently green -> skip to red
 
-			String[] r = animateLights(
-				String.format("trafficLight%d_red_", t.hashCode()),
-				String.format("%d; trafficLight%d_green_anim2.end + %d", myTick, t.hashCode(), t.getGreenCycle() - 1),
-				true);
-			animations[0] += r[0];
-			animations[1] += r[1];
-			myTick += t.getRedCycle();
-
-			r = animateLights(
-				String.format("trafficLight%d_green_", t.hashCode()),
-				String.format("%d; trafficLight%d_red_anim2.end + %d", myTick, t.hashCode(), t.getRedCycle() - 1),
-				false);
-			animations[0] += r[0];
-			animations[1] += r[1];
-			myTick += t.getGreenCycle();
+			String[] names = new String[] { "red", "green" };
+			int[] cycles = new int[] { t.getRedCycle(), t.getGreenCycle() };
+			for (int i = 0; i < 2; myTick += cycles[i++]) {
+				String[] r = animateLights(
+						String.format("trafficLight%d_%s_", t.hashCode(), names[i]),
+						String.format("%d; trafficLight%d_%s_anim2.end + %d",
+								myTick, t.hashCode(), names[i^1], cycles[i^1] - 1),
+						i == 1);
+				animations[0] += r[0];
+				animations[1] += r[1];
+			}
 		}
 		
 		return translate(x, y, scale(flipped ? -1 : 1, 1, translate(-25.062f,-6.5223f,
