@@ -487,17 +487,15 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	private String putLights (String color, float x, float y, boolean flipped, int fromTick, TrafficLight t) {
 		String animations[] = { "", "" };
 		if (t != null) {
-			int myTick = fromTick + (t.isGreen(fromTick) ?
-					t.remainingTimeToNextCycle(fromTick) : t.remainingWaitingTime(fromTick));
-			int i = t.isGreen(fromTick) ? 0 : -1;
-			String[] names = new String[] { "filler", "red", "green" };
-			color = names[2 + i];
+			String[] names = new String[] { "green" , "red" };
+			color = names[t.isGreen(fromTick) ? 0 : 1];
 			int[] cycles = new int[] { t.getRedCycle(), t.getGreenCycle() };
-			for (String[] r; i < 2; myTick += cycles[(2 + (i++)) % 2], animations[0] += r[0], animations[1] += r[1])
-				r = animateLights(String.format("trafficLight%d_%s_", t.hashCode(), names[i + 1]),
-						i == -1 ? Integer.toString(myTick) :
-							String.format("%d; trafficLight%d_%s_anim2.end + %d",
-								myTick, t.hashCode(), names[(i^1) + 1],	cycles[i^1] - 1), ((2 + i) % 2) == 1);
+			int[] offset = new int[] { t.remainingTimeToNextGreen(fromTick), t.remainingTimeToNextRed(fromTick) };
+			int i = 0;
+			for (String[] r; i < 2; i++, animations[0] += r[0], animations[1] += r[1])
+				r = animateLights(String.format("trafficLight%d_%s_", t.hashCode(), names[i]),
+							String.format("%d; trafficLight%d_%s_anim3.end + %d",
+								offset[i], t.hashCode(), names[i^1],	cycles[i^1] - 1), i == 1);
 		}
 		return translate(x, y, scale(flipped ? -1 : 1, 1, translate(-25.062f,-6.5223f,
 				"<path d=\"m25.062,6.5223c1.933,0,3.5,1.5669,3.5,3.5003,0,1.9328-1.567,3.4997-3.5,3.4997\" class=\"" + color + "\">\n" + 
