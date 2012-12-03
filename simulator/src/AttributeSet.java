@@ -2,7 +2,7 @@
 public class AttributeSet {
 	int distance;
 	int capacity;
-	int trafficLightOffset;
+	int trafficLightOffset = -1;
 	int trafficLightGreenCycle;
 	int trafficLightRedCycle;
 }

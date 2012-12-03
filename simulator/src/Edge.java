@@ -29,7 +29,8 @@ public class Edge {
 		this.out = out;
 		this.distance = attr.distance;
 		this.capacity = attr.capacity;
-		this.trafficlight = new TrafficLight(attr.trafficLightOffset, attr.trafficLightGreenCycle, attr.trafficLightRedCycle);
+		this.trafficlight = attr.trafficLightOffset == -1 ? null :
+				new TrafficLight(attr.trafficLightOffset, attr.trafficLightGreenCycle, attr.trafficLightRedCycle);
 	}
 	
 	/* simplified constructor for dijkstra usage */
