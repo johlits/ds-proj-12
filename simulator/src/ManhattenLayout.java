@@ -199,7 +199,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 						expect = ParseExpect.TrafficLightOffsetOrAttributeEnd;
 						break;
 					case TrafficLightOffsetOrAttributeEnd:
-						if (!token.equals("]") || !token.equals("}")) {
+						if (!token.equals("]") && !token.equals("}")) {
 							current.trafficLightOffset = Integer
 									.parseInt(token);
 							expect = ParseExpect.TrafficLightGreenCycle;
@@ -266,7 +266,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 						expect = ParseExpect.TrafficLightOffsetOrAttributeEnd;
 						break;
 					case TrafficLightOffsetOrAttributeEnd:
-						if (!token.equals("]") || !token.equals("}")) {
+						if (!token.equals("]") && !token.equals("}")) {
 							current.trafficLightOffset = Integer
 									.parseInt(token);
 							expect = ParseExpect.TrafficLightGreenCycle;
