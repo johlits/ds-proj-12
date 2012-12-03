@@ -19,12 +19,16 @@ public class TrafficLight {
 		return tick >= a && ((b + tick - a) % b) < c;
 	}
 	
-	public int remainingTimeToNextCycle(int tick) {
-		return b - ((b + tick - a) % b);
+	public int remainingTimeToNextGreen(int tick) {
+		return tick >= a ? b - ((b + tick - a) % b) : a - tick;
+	}
+
+	public int remainingTimeToNextRed(int tick) {
+		return remainingTimeToNextGreen(tick) + c;
 	}
 	
 	public int remainingWaitingTime(int tick) {
-		return isGreen(tick) ? 0 : remainingTimeToNextCycle(tick);
+		return isGreen(tick) ? 0 : remainingTimeToNextGreen(tick);
 	}
 	
 	public int getStart () {
