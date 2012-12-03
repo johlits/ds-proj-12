@@ -52,6 +52,16 @@ public class GraphicalUserInterface {
 				}});
 	}
 	
+	public void setTitle (final String title) {
+		if (isAlive())
+			display.asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (!shell.isDisposed())
+						shell.setText(title);
+				}});
+	}
+
 	public boolean isAlive () {
 		return !display.isDisposed();
 	}
