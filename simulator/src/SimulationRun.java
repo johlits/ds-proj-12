@@ -17,7 +17,7 @@ public class SimulationRun {
 
 		ManhattenLayout l = null;
 		try {
-			l = new ManhattenLayout(str, cars, new SimpleRouting());
+			l = new ManhattenLayout(str, cars, 100, new LocalShortestPathRoutingWithTrafficLightsAndReservation());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

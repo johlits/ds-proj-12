@@ -11,6 +11,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	private HashMap<Edge, ManhattenPosition> edgePosition;
 	private Simulation simulation;
 	
+	private Zone[][] zones;
+	private int yzones = 0, xzones = 0;
+	
 	class MoveEvent {
 		MovementRequest r;
 		int time;
@@ -44,6 +47,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			"\n" + 
 			"    rect.edge { fill: #dcdee0 }\n" + 
 			"    rect.node { fill: none; stroke-width: 1 }\n" + 
+			"    rect.zone { fill: #1B63E0; fill-opacity: 0.5; stroke-width: 1 }\n" + 
 			"    rect.car { fill: #FFF; fill-opacity: 0.5; stroke-width: 0.38 }\n" +
 			"    /* shared attributes */\n" + 
 			"    rect.node, rect.car { stroke: #676464 }\n" + 
@@ -91,8 +95,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		SymbolOrAttribute, Symbol, Connector, ConnectorOrAttribute, AttributeDistance, AttributeCapacity, TrafficLightOffsetOrAttributeEnd, TrafficLightGreenCycle, TrafficLightRedCycle, AttributeEnd
 	};
 
-	public ManhattenLayout(Node[][] matrix) {
+	public ManhattenLayout(Node[][] matrix, Zone[][] zones) {
 		this.matrix = matrix;
+		this.zones = zones;
 	}
 
 	class VerticalConnection {
@@ -102,9 +107,18 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	}
 
 	/* TODO refactor parser with callbacks */
-	public ManhattenLayout(String layout, String vehicles, RoutingAlgorithm algo) throws Exception {
+	public ManhattenLayout(String layout, String vehicles, float zoneSize, RoutingAlgorithm algo) throws Exception {
 		nodes = new HashMap<String, Node>();
 		List<List<Node>> matrix = new ArrayList<List<Node>>();
+		
+		// TODO a better solution
+		xzones = (int)(1440.0/zoneSize);
+		yzones = (int)(900.0/zoneSize);
+		zones = new Zone[yzones][xzones];
+		for (int i = 0; i < yzones; i++) 
+			for (int j = 0; j < xzones; j++) 
+				zones[i][j] = new Zone(i,j,zoneSize,zoneSize);
+		
 		edgePosition = new HashMap<Edge, ManhattenPosition>();
 
 		/* TODO cache, incoming/outings here and just set array */
@@ -410,6 +424,12 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 							rotate(putEdges(0, 0, matrix[r + 1][c], n, tick, anim)));
 			}
 		}
+		for (int i = 0; i < yzones; i++) 
+			for (int j = 0; j < xzones; j++) 
+				s += putObject("zone", zones[i][j].getWidth(), 
+					zones[i][j].getHeight(), zones[i][j].getX()*zones[i][j].getWidth(), 
+					zones[i][j].getY()*zones[i][j].getHeight(), 1);
+					
 		if (anim)
 			for (Vehicle v : records.keySet())
 				s += putObject(
