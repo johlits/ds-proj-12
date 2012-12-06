@@ -6,7 +6,7 @@ public class RandomRouting implements RoutingAlgorithm {
 	}
 
 	@Override
-	public void init(Vehicle[] vehicles) {
+	public void init(Vehicle[] vehicles, Edge[] edges) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -16,7 +16,7 @@ public class Simulation {
 	private int vehiclecount;
 	private RoutingAlgorithm routing;
 
-	public Simulation(Graph graph, Vehicle[] vehicles, RoutingAlgorithm routing) {
+	public Simulation(Graph graph, Vehicle[] vehicles, Edge[] edges, RoutingAlgorithm routing) {
 		this.graph = graph;
 		this.vehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < vehicles.length; i++)
@@ -24,7 +24,7 @@ public class Simulation {
 		this.vehiclecount = vehicles.length;
 		this.time = 0;
 		this.routing = routing;
-		routing.init(vehicles);
+		routing.init(vehicles, edges);
 	}
 	
 	public List<Vehicle> getVehicles () {

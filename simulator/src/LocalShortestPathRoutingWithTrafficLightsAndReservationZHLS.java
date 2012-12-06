@@ -2,13 +2,16 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.HashMap;
 
-public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements RoutingAlgorithm {
+public class LocalShortestPathRoutingWithTrafficLightsAndReservationZHLS implements RoutingAlgorithm {
 
 	public static HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
+	private static ArrayList<Zone> zones;
+	private static int yzones = 0, xzones = 0;
 	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		Edge edge = vehicle.getPosition();
+		
 		ArrayList<Edge> visited = new ArrayList<Edge>();
 		PriorityQueue<PathEdge> distances = new PriorityQueue<PathEdge>();
 		
@@ -61,7 +64,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 		}
 			
 		// TODO: after some number of ticks, clean hashmap of old stuff
-
+		vehicle.newEdgeUpdate(ptr.getEdge());
 		return ptr.getEdge();
 	}
 	class Reservation {
@@ -92,9 +95,20 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 		    return result;
 		}
 	}
-	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
-		// TODO Auto-generated method stub
+		int zid = 0, xzones = 10, yzones = 10;
+		float zoneSize = 100;
+		zones = new ArrayList<Zone>();
 		
+		for (int i = 0; i < yzones; i++) 
+			for (int j = 0; j < xzones; j++) 
+				zones.add(new Zone(i,j,zoneSize,zoneSize,""+(++zid)));
+				
+		// add 3 edges in each zone
+		for (int i = 0,j = 0; i < edges.length; i++) {
+			edges[i].setZone(zones.get(j));
+			//if (i%3==0)
+			//	j++;
+		}
 	}
 }
