@@ -2,8 +2,8 @@
 public class MovementRequest {
 	private Vehicle vehicle;
 	private Edge target;
-	private int to;
-	private MovementType type;
+	private int to = 0;
+	private MovementType type = MovementType.MOVE;
 	private CollisionStrategy strategy = CollisionStrategy.Defensive;
 	
 	enum MovementType {
@@ -18,21 +18,17 @@ public class MovementRequest {
 	}
 
 	public MovementRequest (Vehicle vehicle, Edge target, int to) {
-		this.type = MovementType.MOVE;
 		this.vehicle = vehicle;
 		this.target = target;
 		this.to = to;		
 	}
 	
 	public MovementRequest (Vehicle vehicle, Edge target) {
-		this.type = MovementType.MOVE;
 		this.vehicle = vehicle;
 		this.target = target;
-		this.to = 0;
 	}
 	
 	public MovementRequest (Vehicle vehicle, int to) {
-		this.type = MovementType.MOVE;
 		this.vehicle = vehicle;
 		this.target = vehicle.getPosition();
 		this.to = to;
