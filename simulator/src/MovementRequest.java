@@ -4,6 +4,7 @@ public class MovementRequest {
 	private Edge target;
 	private int to;
 	private MovementType type;
+	private CollisionStrategy strategy = CollisionStrategy.Defensive;
 	
 	enum MovementType {
 		MOVE,
@@ -11,6 +12,11 @@ public class MovementRequest {
 		STAY
 	}
 	
+	enum CollisionStrategy {
+		Aggressive,
+		Defensive
+	}
+
 	public MovementRequest (Vehicle vehicle, Edge target, int to) {
 		this.type = MovementType.MOVE;
 		this.vehicle = vehicle;
@@ -56,5 +62,13 @@ public class MovementRequest {
 	
 	public void stay () {
 		type = MovementType.STAY;
+	}
+
+	public boolean isDefensive () {
+		return this.strategy == CollisionStrategy.Defensive;
+	}
+
+	void setCollisionStrategy (CollisionStrategy strategy) {
+		this.strategy = strategy;
 	}
 }

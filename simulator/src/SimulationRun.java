@@ -8,11 +8,11 @@ public class SimulationRun {
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
 		final boolean preprocessed = true;
 		
-		String str = "a { 1 1 0 1 1 } * [ 1 1 2 1 1 ] b * c * d\n" +
+		String str = "a { 1 1 0 1 1 } * [ 1 1 1 1 1 ] b * c * d\n" +
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
-				"e * f * g * h\n" +
-				"*   *   *  { 1 1 0 5 5 } *  [ 1 1 1 5 5 ]\n" +
-				"i * j * [ 1 1 2 5 5 ] k * [ 1 1 1 5 5 ] l";
+				"e * f * g * [ 2 1 ] h\n" +
+				"*   *   * [ 1 1 ] * [ 1 1 ]\n" +
+				"i * j * [ 1 1 2 5 5 ] k * [ 1 1 30 5 5 ] l";
 		String cars = "a b l\nc d l";
 
 		ManhattenLayout l = null;
@@ -30,8 +30,9 @@ public class SimulationRun {
 		if (preprocessed)
 			for (int i = 0; !sim.isFinished() && i < upperlimit; i++)
 				sim.progress(ml);
-		
-		gui.setText(ml.toSVG(0, true, preprocessed), "simulator");
+		String s = ml.toSVG(0, true, preprocessed);
+		gui.setText(s, "simulator");
+		//sim.save(s);
 		
 		if (!preprocessed)
 			new Thread(new Runnable() {
@@ -46,6 +47,19 @@ public class SimulationRun {
 						sim.progress();
 						gui.update(ml.toSVG(sim.getTick(), false, false),
 								String.format("Tick %d", sim.getTick()));
+					}
+				}} ).start();
+		else
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for (int i = 1; gui.isAlive(); i++) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						gui.setTitle(String.format("Tick %d", i));
 					}
 				}} ).start();
 

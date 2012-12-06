@@ -102,12 +102,13 @@ public class Simulation {
 			for (MovementRequest r : requests) {
 				if (r.getType() == MovementRequest.MovementType.MOVE) {
 					Edge edge = r.getTarget();
+					int defensiveCount = 0;
 					List<MovementRequest> same = new ArrayList<MovementRequest>();
 					int delta = 0;
 					for (MovementRequest r2 : requests)
 						if (edge == r2.getTarget())
 							if (r2.getType() == MovementRequest.MovementType.MOVE && r2.getTo() == r.getTo())
-								same.add(r2);
+								same.add(r2.isDefensive() ? defensiveCount++ : same.size(), r2);
 							else if (r2.getType() == MovementRequest.MovementType.STAY &&
 								r.getTo() == r2.getVehicle().getMilage())
 								++delta;
@@ -119,7 +120,8 @@ public class Simulation {
 						continue;
 					System.out.printf("rejecting out some requests ...");
 					while (same.size() + delta > edge.getCapacity())
-						same.remove(new Random().nextInt(same.size())).stay();
+						same.remove(new Random().nextInt(defensiveCount > 0 ?
+							defensiveCount-- : same.size())).stay();
 					System.out.printf("after rejecting: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
 					break;
 				}
