@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 
 public class Edge {
 	private int distance;
 	private int capacity;
 	private TrafficLight trafficlight;
 	private List<Vehicle> vehicles = new ArrayList<Vehicle>();
+	private Zone zone;
 	private Node in;
 	private Node out;
 	
@@ -29,6 +31,7 @@ public class Edge {
 		this.out = out;
 		this.distance = attr.distance;
 		this.capacity = attr.capacity;
+		this.zone = zone;
 		this.trafficlight = attr.trafficLightOffset == -1 ? null :
 				new TrafficLight(attr.trafficLightOffset, attr.trafficLightGreenCycle, attr.trafficLightRedCycle);
 	}
@@ -38,6 +41,25 @@ public class Edge {
 		this.in = in;
 		this.out = out;
 		this.distance = distance;
+		this.zone = zone;
+	}
+	
+	public void setZone(Zone z) {
+		this.zone = z;
+		z.addEdge(this);
+	}
+	
+	public Zone getZone() {
+		return zone;
+	}
+	
+	public LinkedList<LinkResponse> linkRequest(Vehicle requestor) {
+		LinkedList<LinkResponse> ll = new LinkedList<LinkResponse>();
+		for (Vehicle v : vehicles) {
+			if (v != requestor)
+				ll.add(v.linkRequest());
+		}
+		return ll;
 	}
 	
 	public Node getIncomingNode () {

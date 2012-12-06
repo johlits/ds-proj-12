@@ -34,7 +34,7 @@ public class LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorit
 	}
 
 	@Override
-	public void init(Vehicle[] vehicles) {
+	public void init(Vehicle[] vehicles, Edge[] edges) {
 	}
 
 }

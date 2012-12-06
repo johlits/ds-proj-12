@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
+import java.util.Random;
 
 public class ManhattenLayout implements MovementRequestApplyHandler {
 	private HashMap<String, Node> nodes;
@@ -11,8 +12,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	private HashMap<Edge, ManhattenPosition> edgePosition;
 	private Simulation simulation;
 	
-	private Zone[][] zones;
-	private int yzones = 0, xzones = 0;
+	int vid = 0; // vehicle id counter
 	
 	class MoveEvent {
 		MovementRequest r;
@@ -95,9 +95,8 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		SymbolOrAttribute, Symbol, Connector, ConnectorOrAttribute, AttributeDistance, AttributeCapacity, TrafficLightOffsetOrAttributeEnd, TrafficLightGreenCycle, TrafficLightRedCycle, AttributeEnd
 	};
 
-	public ManhattenLayout(Node[][] matrix, Zone[][] zones) {
+	public ManhattenLayout(Node[][] matrix) {
 		this.matrix = matrix;
-		this.zones = zones;
 	}
 
 	class VerticalConnection {
@@ -107,17 +106,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	}
 
 	/* TODO refactor parser with callbacks */
-	public ManhattenLayout(String layout, String vehicles, float zoneSize, RoutingAlgorithm algo) throws Exception {
+	public ManhattenLayout(String layout, String vehicles, RoutingAlgorithm algo) throws Exception {
 		nodes = new HashMap<String, Node>();
 		List<List<Node>> matrix = new ArrayList<List<Node>>();
-		
-		// TODO a better solution
-		xzones = (int)(1440.0/zoneSize);
-		yzones = (int)(900.0/zoneSize);
-		zones = new Zone[yzones][xzones];
-		for (int i = 0; i < yzones; i++) 
-			for (int j = 0; j < xzones; j++) 
-				zones[i][j] = new Zone(i,j,zoneSize,zoneSize);
 		
 		edgePosition = new HashMap<Edge, ManhattenPosition>();
 
@@ -127,6 +118,8 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		StringTokenizer lines = new StringTokenizer(layout, "\n");
 		boolean mixedRow = true;
 		LinkedList<VerticalConnection> verticalConnectors = null;
+		
+		List<Edge> ea = new LinkedList<Edge>();
 
 		while (lines.hasMoreTokens()) {
 			String line = lines.nextToken();
@@ -181,8 +174,9 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 						for (int z = start; z < end; z++)
 							if (scan[z>>1].equals(conn[z][0]) || scan[z>>1].equals(conn[z][1])) {
 								Edge e = (attrs[z] != null) ?
-									new Edge(rel[z], rel[z^1], attrs[z]) :
+									new Edge(rel[z], rel[z^1], attrs[z]) : // TODO assign real zones
 									new Edge(rel[z], rel[z^1], 5, 1, null);
+								ea.add(e);
 								rel[z].addOutgoingEdge(e);
 								rel[z^1].addIncomingEdge(e);
 								ManhattenPosition mp = new ManhattenPosition(row.size(), matrix.size(), z);
@@ -313,7 +307,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		/* generate simulation */
 		simulation = new Simulation(
 				new Graph(nodes.values().toArray(new Node[]{})),
-				va.toArray(new Vehicle[]{}), algo);
+				va.toArray(new Vehicle[]{}),ea.toArray(new Edge[]{}), algo);
 
 		ArrayList<Node[]> temp = new ArrayList<Node[]>();
 		for (List<Node> a : matrix)
@@ -331,7 +325,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			Node target = nodes.get(st.nextElement());
 			for (Edge e : from.getOutgoingEdges())
 				if (e.getOutgoingNode() == to) {
-					Vehicle v = new Vehicle(e, target);
+					Vehicle v = new Vehicle(e, target,""+(++vid));
 					e.addVehicle(v);
 					va.add(v);
 				}
@@ -424,11 +418,6 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 							rotate(putEdges(0, 0, matrix[r + 1][c], n, tick, anim)));
 			}
 		}
-		for (int i = 0; i < yzones; i++) 
-			for (int j = 0; j < xzones; j++) 
-				s += putObject("zone", zones[i][j].getWidth(), 
-					zones[i][j].getHeight(), zones[i][j].getX()*zones[i][j].getWidth(), 
-					zones[i][j].getY()*zones[i][j].getHeight(), 1);
 					
 		if (anim)
 			for (Vehicle v : records.keySet())

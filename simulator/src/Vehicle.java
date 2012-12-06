@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 public class Vehicle {
 	/**
 	 * The position of the road fragment (0 =< milage =< distance)
@@ -6,11 +6,15 @@ public class Vehicle {
 	private int milage;
 	private Edge position;
 	private Node target;
+	private ArrayList<Entry> routingTable;
+	private String vehicleID;
 	
-	public Vehicle (Edge position, Node target) {
+	public Vehicle (Edge position, Node target, String id) {
 		this.position = position;
 		this.target = target;
 		this.milage = position.getDistance();
+		routingTable = new ArrayList<Entry>();
+		vehicleID = id;
 	}
 	
 	public int getMilage () {
@@ -27,6 +31,25 @@ public class Vehicle {
 
 	public Node getTarget () {
 		return target;
+	}
+	private ArrayList<LinkResponse> broadcastLinkRequest(Edge e) {
+		return e.getZone().broadcastLinkRequest(this);
+	}
+	public LinkResponse linkRequest() {
+		return new LinkResponse(vehicleID, position.getZone().getZoneID());
+	}
+	
+	public void newEdgeUpdate(Edge e) {
+		System.out.println(vehicleID + " broadcasts link request in zone " + e.getZone().getZoneID());
+		ArrayList<LinkResponse> al = broadcastLinkRequest(e);
+		if (al.isEmpty()) 
+			System.out.println("but got no answers");
+		else
+			System.out.println("got answers");
+		for (LinkResponse linkResponse : al) {
+			System.out.println(linkResponse);
+		}
+		System.out.println("---");
 	}
 	
 	public MovementRequest move (int tick, RoutingAlgorithm routing) {
@@ -46,6 +69,7 @@ public class Vehicle {
 	}
 	
 	public void apply (MovementRequest request) {
+	
 		switch (request.getType()) {
 		case MOVE:
 			if (request.getTarget() == position) {
