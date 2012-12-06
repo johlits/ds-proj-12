@@ -2,7 +2,11 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class LocalShortestPathRouting implements RoutingAlgorithm {
-	
+
+	protected PathEdge calculateDistance (PathEdge a, Edge b, int tick) {
+		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
+	}
+
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		Edge edge = vehicle.getPosition();
@@ -20,7 +24,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 			}
 			for (Edge e : current.getEdge().getOutgoingNode().getOutgoingEdges()) {
 				if (visited.contains(e)) continue;
-				PathEdge d = new PathEdge(current, current.getEdge().getDistance() + e.getDistance(), e);
+				PathEdge d = calculateDistance(current, e, tick);
 				distances.offer(d);
 				visited.add(e);
 			}
