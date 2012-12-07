@@ -7,6 +7,10 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
 	}
 
+	private List<Edge> getPossibilities(Edge e, int t) {
+		return e.getOutgoingNode().getOutgoingEdges();
+	}
+
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		Edge edge = vehicle.getPosition();
@@ -22,7 +26,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 				target = current;
 				break;
 			}
-			for (Edge e : current.getEdge().getOutgoingNode().getOutgoingEdges()) {
+			for (Edge e : getPossibilities(current, tick + current.getEdge().getDistance())) {
 				if (visited.contains(e)) continue;
 				PathEdge d = calculateDistance(current, e, tick);
 				distances.offer(d);
