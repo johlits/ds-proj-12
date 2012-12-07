@@ -8,10 +8,10 @@ public class SimulationRun {
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
 		final boolean preprocessed = false;
 		
-		String str = "a { 1 1 0 1 1 } * [ 1 1 1 1 1 ] b * c * d\n" +
+		String str = "a { 1 1 0 1 1 } * [ 1 1 0 1 1 ] b * c * [ 7 7 ] d\n" +
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
 				"e * f * g * [ 2 1 ] h\n" +
-				"*   *   * [ 1 1 ] * [ 1 1 ]\n" +
+				"*   *   * [ 1 1 ] * [ 5 5 ]\n" +
 				"i * j * [ 1 1 2 5 5 ] k * [ 1 1 30 5 5 ] l";
 		String cars = "a b l\nc d l";
 
