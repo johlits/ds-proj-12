@@ -56,13 +56,13 @@ public class Vehicle {
 		if (position == null)
 			return null;
 		if (milage < position.getDistance()) {
-			return new MovementRequest(this, milage + 1);
+			return new MovementRequest(this, milage + 1, routing.getStrategy(this, milage + 1));
 		} else {
 			TrafficLight light = position.getTrafficLight();
 			if (light == null || light.isGreen(tick)) {
 				if (position.getOutgoingNode() == target)
 					return new MovementRequest(this, MovementRequest.MovementType.FINISH);
-				return new MovementRequest(this, routing.nextEdge(this, tick));
+				return new MovementRequest(this, routing.nextEdge(this, tick), routing.getStrategy(this, tick));
 			}
 			return new MovementRequest(this, MovementRequest.MovementType.STAY);
 		}
