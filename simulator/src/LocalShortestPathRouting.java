@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class LocalShortestPathRouting implements RoutingAlgorithm {
@@ -7,7 +8,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
 	}
 
-	private List<Edge> getPossibilities(Edge e, int t) {
+	private Edge[] getPossibilities(Edge e, int t) {
 		return e.getOutgoingNode().getOutgoingEdges();
 	}
 
@@ -30,7 +31,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 				target = current;
 				break;
 			}
-			for (Edge e : getPossibilities(current, tick + current.getEdge().getDistance())) {
+			for (Edge e : getPossibilities(current.getEdge(), tick + current.getEdge().getDistance())) {
 				if (visited.contains(e)) continue;
 				PathEdge d = calculateDistance(current, e, tick);
 				distances.offer(d);

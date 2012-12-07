@@ -1,75 +1,91 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.HashMap;
 
-public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements RoutingAlgorithm {
+public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
 
-	public static HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
+	private HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
+	private HashMap<Vehicle, List<Reservation>> vehicleRoutes = new HashMap<Vehicle, List<Reservation>>();
+	
+	private int getCongestion(Edge e, int t, int m) {
+		int congestion = 0;
+		Reservation tmp = new Reservation(e, t, m);
+		if (reservationTable.containsKey(tmp))
+			congestion = reservationTable.get(tmp);
+		return congestion;
+	}
+	
+	private List<Edge> getPossibilities(Edge e, int t) {
+		ArrayList<Edge> possibilities = new ArrayList<Edge>();
+		for (Edge oe : e.getOutgoingNode().getOutgoingEdges()) {
+			int c = getCongestion(oe, t, 0);
+			if (c < e.getCapacity())
+				possibilities.add(oe);
+		}
+		return possibilities;
+	}
+	
+	@Override
+	public void init(Vehicle[] vehicles, Edge[] edges) {
+		
+		for (Vehicle v : vehicles) {
+			List<Reservation> reservations = new ArrayList<Reservation>();
+			vehicleRoutes.put(v, reservations);
+			
+			Edge edge = v.getPosition();
+			int m = v.getMilage();
+			int congestion = 0;
+			
+			for (int t = 0; m < edge.getDistance() || edge.getOutgoingNode() != v.getTarget(); t++) {
+				int newM;
+				Edge newE;
+				if (m < edge.getDistance()) {
+					newM = m + 1;
+					newE = edge;
+				} else {
+					newE = super.nextEdge(v, t);
+					newM = 0;
+				}
+			
+				congestion = getCongestion(newE, t, newM);
+				Reservation tmp;
+				
+				if (congestion < edge.getCapacity()) {
+					tmp = new Reservation(newE, t, newM);
+					reservationTable.put(tmp, congestion+1);
+					reservations.add(tmp);
+				} else {
+					tmp = new Reservation(edge, t, m);
+					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
+					reservations.add(tmp);
+				}
+				edge = newE;
+				m = newM;
+			}
+		}
+	}
 	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
-		Edge edge = vehicle.getPosition();
-		ArrayList<Edge> visited = new ArrayList<Edge>();
-		PriorityQueue<PathEdge> distances = new PriorityQueue<PathEdge>();
-		
-		// get congestion
-		int congestion = 0;
-		Reservation key = new Reservation(edge, 0);
-		if (reservationTable.containsKey(key))
-			congestion = reservationTable.get(key); 
-			
-		PathEdge spawn = new PathEdge(null, 0, edge, congestion);
-		distances.add(spawn);
-		PathEdge target = null;
-		
-		/* calculate path distances */
-		while (!distances.isEmpty()) {
-			PathEdge current = distances.poll();
-			if (current.getEdge().getOutgoingNode() == vehicle.getTarget()) {
-				target = current;
-				break;
-			}
-			for (Edge e : current.getEdge().getOutgoingNode().getOutgoingEdges()) {
-				if (visited.contains(e)) continue;
-				int dist = current.getEdge().getDistance() + e.getDistance();
-				if (e.getTrafficLight() != null)
-					dist += e.getTrafficLight().remainingWaitingTime(dist + tick);
-				
-				// get congestion
-				congestion = 0;
-				key = new Reservation(e, dist);
-				if (reservationTable.containsKey(key))
-					congestion = reservationTable.get(key); 
-
-				PathEdge d = new PathEdge(current, dist, e, congestion);
-				distances.offer(d);
-				visited.add(e);
-			}
-		}
-		
-		/* build path to target node */
-		PathEdge ptr;
-		for (ptr = target; ptr.getPrev() != spawn; ptr = ptr.getPrev()) {
-		
-			congestion = 0;
-			key = new Reservation(ptr.getEdge(), ptr.getDistance());
-			if (reservationTable.containsKey(key)) 
-				congestion = reservationTable.get(key); 
-			
-			// use ptr.getDistance() as time-unit for the reservation, probably wrong?
-			reservationTable.put(new Reservation(ptr.getEdge(), ptr.getDistance()), congestion+1); 
-		}
-			
-		// TODO: after some number of ticks, clean hashmap of old stuff
-
-		return ptr.getEdge();
+		return vehicleRoutes.get(vehicle).get(tick).e;
 	}
+	
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
+		Reservation r = vehicleRoutes.get(v).get(tick);
+		return r.e == v.getPosition() && r.m == v.getMilage() ?
+			MovementRequest.CollisionStrategy.Defensive : MovementRequest.CollisionStrategy.Aggressive;
+			
+	}
+	
 	class Reservation {
 		public Edge e;
 		public int t;
-		public Reservation( Edge e, int t ) {
+		public int m;
+		public Reservation( Edge e, int t, int m ) {
 			this.e = e;
 			this.t = t;
+			this.m = m;
 		} 
 		@Override
 		public boolean equals(Object o)
@@ -79,6 +95,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 
 			Reservation that = (Reservation) o;
 
+			if (m != that.m) return false;
 			if (e != that.e) return false;
 			if (t != that.t) return false;
 
@@ -89,12 +106,9 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation implements 
 		{
 		    int result = (int) (e.hashCode() ^ (e.hashCode() >>> 32));
 		    result = 31 * result + (int) (t ^ (t >>> 32));
+		    result = 31 * result + (int) (m ^ (m >>> 32));
 		    return result;
 		}
 	}
-	@Override
-	public void init(Vehicle[] vehicles, Edge[] edges) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

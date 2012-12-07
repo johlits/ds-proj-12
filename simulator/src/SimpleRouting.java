@@ -30,6 +30,10 @@ public class SimpleRouting implements RoutingAlgorithm {
 		for (ptr = target; ptr.getPrev() != spawn; ptr = ptr.getPrev());
 		return ptr.getEdge();
 	}
+	
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
+		return MovementRequest.CollisionStrategy.Defensive;
+	}
 
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {

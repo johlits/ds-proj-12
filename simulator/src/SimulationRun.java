@@ -6,7 +6,7 @@ public class SimulationRun {
 		Locale.setDefault(Locale.US);
 		
 		final GraphicalUserInterface gui = new GraphicalUserInterface();
-		final boolean preprocessed = true;
+		final boolean preprocessed = false;
 		
 		String str = "a { 1 1 0 1 1 } * [ 1 1 1 1 1 ] b * c * d\n" +
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
@@ -18,7 +18,7 @@ public class SimulationRun {
 		ManhattenLayout l = null;
 		try {
 			l = new ManhattenLayout(str, cars, 
-			new LocalShortestPathRoutingWithTrafficLightsAndReservationZHLS());
+			new LocalShortestPathRoutingWithTrafficLightsAndReservation());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

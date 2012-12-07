@@ -9,6 +9,10 @@ public class RandomRoutingZHLS implements RoutingAlgorithm {
 		vehicle.newEdgeUpdate(vehicle.getPosition().getOutgoingNode().getOutgoingEdges()[0]);
 		return vehicle.getPosition().getOutgoingNode().getOutgoingEdges()[0];
 	}
+	
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
+		return MovementRequest.CollisionStrategy.Defensive;
+	}
 
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {

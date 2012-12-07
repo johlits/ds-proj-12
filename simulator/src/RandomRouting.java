@@ -10,4 +10,9 @@ public class RandomRouting implements RoutingAlgorithm {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
+		return MovementRequest.CollisionStrategy.Defensive;
+	}
 }

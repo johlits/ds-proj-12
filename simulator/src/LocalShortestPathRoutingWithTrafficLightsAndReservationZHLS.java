@@ -67,6 +67,11 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservationZHLS impleme
 		vehicle.newEdgeUpdate(ptr.getEdge());
 		return ptr.getEdge();
 	}
+	
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
+		return MovementRequest.CollisionStrategy.Defensive;
+	}
+	
 	class Reservation {
 		public Edge e;
 		public int t;
