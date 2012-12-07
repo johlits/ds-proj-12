@@ -23,15 +23,17 @@ public class MovementRequest {
 		this.to = to;		
 	}
 	
-	public MovementRequest (Vehicle vehicle, Edge target) {
+	public MovementRequest (Vehicle vehicle, Edge target, CollisionStrategy strategy) {
 		this.vehicle = vehicle;
 		this.target = target;
+		this.strategy = strategy;
 	}
 	
-	public MovementRequest (Vehicle vehicle, int to) {
+	public MovementRequest (Vehicle vehicle, int to, CollisionStrategy strategy) {
 		this.vehicle = vehicle;
 		this.target = vehicle.getPosition();
 		this.to = to;
+		this.strategy = strategy;
 	}
 	
 	public MovementRequest (Vehicle vehicle, MovementType type) {
@@ -62,9 +64,5 @@ public class MovementRequest {
 
 	public boolean isDefensive () {
 		return this.strategy == CollisionStrategy.Defensive;
-	}
-
-	void setCollisionStrategy (CollisionStrategy strategy) {
-		this.strategy = strategy;
 	}
 }

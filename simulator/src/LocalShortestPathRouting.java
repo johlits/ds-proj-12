@@ -7,6 +7,10 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
 	}
 
+	public MovementRequest.CollisionStrategy getStrategy(Vehicle vehicle, int tick) {
+		return MovementRequest.CollisionStrategy.Defensive;
+	}
+
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		Edge edge = vehicle.getPosition();
