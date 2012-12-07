@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
 
 	private HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
-	private HashMap<Vehicle, List<Reservation>> vehicleRoutes = new HashMap<Vehicle, List<Reservation>>();
+	private HashMap<Vehicle, List<CarReservation>> vehicleRoutes = new HashMap<Vehicle, List<CarReservation>>();
 	
 	private int getCongestion(Edge e, int t, int m) {
 		int congestion = 0;
@@ -30,7 +30,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 	public void init(Vehicle[] vehicles, Edge[] edges) {
 		
 		for (Vehicle v : vehicles) {
-			List<Reservation> reservations = new ArrayList<Reservation>();
+			List<CarReservation> reservations = new ArrayList<CarReservation>();
 			vehicleRoutes.put(v, reservations);
 			
 			Edge edge = v.getPosition();
@@ -45,7 +45,6 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 					newE = edge;
 				} else {
 					newE = super.nextEdge(v, edge, t);
-					if (newE == edge) System.err.println("OH NOEZZZZZZZ !!11");
 					newM = 0;
 				}
 			
@@ -55,11 +54,11 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 				if (congestion < newE.getCapacity()) {
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
-					reservations.add(tmp);
+					reservations.add(new CarReservation(newE, false));
 				} else {
 					tmp = new Reservation(edge, t, m);
 					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
-					reservations.add(tmp);
+					reservations.add(new CarReservation(newE, true));
 				}
 				edge = newE;
 				m = newM;
@@ -73,13 +72,20 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 	}
 	
 	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
-		Reservation r = vehicleRoutes.get(v).get(tick);
-		return r.e == v.getPosition() && r.m == v.getMilage() ?
+		CarReservation r = vehicleRoutes.get(v).get(tick);
+		return r.defensive ?
 			MovementRequest.CollisionStrategy.Defensive :
 			MovementRequest.CollisionStrategy.Aggressive;
 			
 	}
-	
+	class CarReservation {
+		public Edge e;
+		public boolean defensive;
+		public CarReservation (Edge e, boolean defensive) {
+			this.e = e;
+			this.defensive = defensive;
+		}
+	};
 	class Reservation {
 		public Edge e;
 		public int t;
