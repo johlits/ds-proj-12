@@ -8,7 +8,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
 	}
 
-	private Edge[] getPossibilities(Edge e, int t) {
+	protected Edge[] getPossibilities(Edge e, int t) {
 		return e.getOutgoingNode().getOutgoingEdges();
 	}
 
@@ -18,7 +18,10 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
-		Edge edge = vehicle.getPosition();
+		return nextEdge(vehicle, vehicle.getPosition(), tick);
+	}
+
+	protected Edge nextEdge(Vehicle vehicle, Edge edge, int tick) {
 		ArrayList<Edge> visited = new ArrayList<Edge>();
 		PriorityQueue<PathEdge> distances = new PriorityQueue<PathEdge>();
 		PathEdge spawn = new PathEdge(null, 0, edge);

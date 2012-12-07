@@ -16,14 +16,14 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 		return congestion;
 	}
 	
-	private List<Edge> getPossibilities(Edge e, int t) {
+	protected Edge[] getPossibilities(Edge e, int t) {
 		ArrayList<Edge> possibilities = new ArrayList<Edge>();
 		for (Edge oe : e.getOutgoingNode().getOutgoingEdges()) {
 			int c = getCongestion(oe, t, 0);
 			if (c < e.getCapacity())
 				possibilities.add(oe);
 		}
-		return possibilities;
+		return possibilities.toArray(new Edge[]{});
 	}
 	
 	@Override
@@ -37,21 +37,22 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 			int m = v.getMilage();
 			int congestion = 0;
 			
-			for (int t = 0; m < edge.getDistance() || edge.getOutgoingNode() != v.getTarget(); t++) {
+			for (int t = 0;m < edge.getDistance() || edge.getOutgoingNode() != v.getTarget(); t++) {
 				int newM;
 				Edge newE;
 				if (m < edge.getDistance()) {
 					newM = m + 1;
 					newE = edge;
 				} else {
-					newE = super.nextEdge(v, t);
+					newE = super.nextEdge(v, edge, t);
+					if (newE == edge) System.err.println("OH NOEZZZZZZZ !!11");
 					newM = 0;
 				}
 			
 				congestion = getCongestion(newE, t, newM);
 				Reservation tmp;
 				
-				if (congestion < edge.getCapacity()) {
+				if (congestion < newE.getCapacity()) {
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(tmp);
@@ -74,7 +75,8 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
 		Reservation r = vehicleRoutes.get(v).get(tick);
 		return r.e == v.getPosition() && r.m == v.getMilage() ?
-			MovementRequest.CollisionStrategy.Defensive : MovementRequest.CollisionStrategy.Aggressive;
+			MovementRequest.CollisionStrategy.Defensive :
+			MovementRequest.CollisionStrategy.Aggressive;
 			
 	}
 	
@@ -82,7 +84,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 		public Edge e;
 		public int t;
 		public int m;
-		public Reservation( Edge e, int t, int m ) {
+		public Reservation (Edge e, int t, int m ) {
 			this.e = e;
 			this.t = t;
 			this.m = m;
