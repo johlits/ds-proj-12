@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.Random;
 
 public class ManhattenLayout implements MovementRequestApplyHandler {
 	private Node[][] matrix;
