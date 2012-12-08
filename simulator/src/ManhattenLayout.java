@@ -7,10 +7,9 @@ import java.util.StringTokenizer;
 import java.util.Random;
 
 public class ManhattenLayout implements MovementRequestApplyHandler {
-	private HashMap<String, Node> nodes;
 	private Node[][] matrix;
-	private HashMap<Edge, ManhattenPosition> edgePosition;
 	private Simulation simulation;
+	ManhattenParser mp;
 	
 	int vid = 0; // vehicle id counter
 	
@@ -91,238 +90,28 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	final float edgeMargin = (nodeSideLength - (edgeWidth * 2)) / 3;
 	final float carMargin = (edgeWidth - carWidth) / 2;
 
-	enum ParseExpect {
-		SymbolOrAttribute, Symbol, Connector, ConnectorOrAttribute, AttributeDistance, AttributeCapacity, TrafficLightOffsetOrAttributeEnd, TrafficLightGreenCycle, TrafficLightRedCycle, AttributeEnd
-	};
-
 	public ManhattenLayout(Node[][] matrix) {
 		this.matrix = matrix;
 	}
 
-	class VerticalConnection {
-		String connector;
-		AttributeSet up = null;
-		AttributeSet down = null;
-	}
-
-	/* TODO refactor parser with callbacks */
 	public ManhattenLayout(String layout, String vehicles, RoutingAlgorithm algo) throws Exception {
-		nodes = new HashMap<String, Node>();
-		List<List<Node>> matrix = new ArrayList<List<Node>>();
-		
-		edgePosition = new HashMap<Edge, ManhattenPosition>();
+		mp = new ManhattenParser(layout);
 
-		/* TODO cache, incoming/outings here and just set array */
-
-		// parse
-		StringTokenizer lines = new StringTokenizer(layout, "\n");
-		boolean mixedRow = true;
-		LinkedList<VerticalConnection> verticalConnectors = null;
-		
-		List<Edge> ea = new LinkedList<Edge>();
-
-		while (lines.hasMoreTokens()) {
-			String line = lines.nextToken();
-			if (line.startsWith("#"))
-				continue;
-			StringTokenizer st = new StringTokenizer(line);
-
-			AttributeSet left = null;
-			AttributeSet right = null;
-			AttributeSet current = null;
-			if (mixedRow) {
-				/* for odd lines */
-				Stack<Node> row = new Stack<Node>();
-				matrix.add(row);
-
-				ParseExpect expect = ParseExpect.Symbol;
-				String connector = null;
-
-				while (st.hasMoreTokens()) {
-					String token = st.nextToken();
-					switch (expect) {
-					case SymbolOrAttribute:
-						if (token.equals("[")) {
-							expect = ParseExpect.AttributeDistance;
-							current = right = new AttributeSet();
-							break;
-						}
-					case Symbol:
-						Node node = new Node();
-						nodes.put(token, node);
-						int start = 2, end = 2;
-						final String[][] conn = new String[][]{
-								new String[] { "*", ">" }, new String[] { "*", "<" },
-								new String[] { "*", "v" }, new String[] { "*", "^" } };
-						final Node[] rel = new Node[4];
-						final AttributeSet[] attrs = new AttributeSet[] { right, left, null, null };
-						if (connector != null) {
-							rel[0] = row.peek();
-							rel[1] = node;
-							start = 0;
-						}
-						String scan[] = new String[] { connector, null };
-						if (verticalConnectors != null) {
-							rel[2] = matrix.get(matrix.size() - 2).get(row.size());
-							rel[3] = node;
-							end = 4;
-							VerticalConnection c = verticalConnectors.removeFirst();
-							attrs[2] = c.down;
-							attrs[3] = c.up;
-							scan[1] = c.connector;
-						}
-						for (int z = start; z < end; z++)
-							if (scan[z>>1].equals(conn[z][0]) || scan[z>>1].equals(conn[z][1])) {
-								Edge e = (attrs[z] != null) ?
-									new Edge(rel[z], rel[z^1], attrs[z]) : // TODO assign real zones
-									new Edge(rel[z], rel[z^1], 5, 1, null);
-								ea.add(e);
-								rel[z].addOutgoingEdge(e);
-								rel[z^1].addIncomingEdge(e);
-								ManhattenPosition mp = new ManhattenPosition(row.size(), matrix.size(), z);
-								edgePosition.put(e, mp);
-							}
-						current = left = right = null;
-						connector = null;
-						
-						row.push(node);
-						expect = ParseExpect.ConnectorOrAttribute;
-						break;
-					case ConnectorOrAttribute:
-						if (token.equals("{")) {
-							current = left = new AttributeSet();
-							expect = ParseExpect.AttributeDistance;
-							break;
-						}
-					case Connector:
-						connector = token;
-						expect = ParseExpect.SymbolOrAttribute;
-						break;
-					case AttributeDistance:
-						current.distance = Integer.parseInt(token);
-						expect = ParseExpect.AttributeCapacity;
-						break;
-					case AttributeCapacity:
-						current.capacity = Integer.parseInt(token);
-						expect = ParseExpect.TrafficLightOffsetOrAttributeEnd;
-						break;
-					case TrafficLightOffsetOrAttributeEnd:
-						if (!token.equals("]") && !token.equals("}")) {
-							current.trafficLightOffset = Integer
-									.parseInt(token);
-							expect = ParseExpect.TrafficLightGreenCycle;
-							break;
-						}
-					case AttributeEnd:
-						if (token.equals("}"))
-							expect = ParseExpect.Connector;
-						else if (token.equals("]"))
-							expect = ParseExpect.Symbol;
-						else
-							throw new Exception("unexpected symbol");
-						break;
-					case TrafficLightGreenCycle:
-						current.trafficLightGreenCycle = Integer
-								.parseInt(token);
-						expect = ParseExpect.TrafficLightRedCycle;
-						break;
-					case TrafficLightRedCycle:
-						current.trafficLightRedCycle = Integer.parseInt(token);
-						expect = ParseExpect.AttributeEnd;
-						break;
-					}
-				}
-				mixedRow = false;
-			} else {
-				verticalConnectors = new LinkedList<VerticalConnection>();
-				ParseExpect expect = ParseExpect.ConnectorOrAttribute;
-				VerticalConnection vc = null;
-				boolean connectorLast = false;
-				while (st.hasMoreElements()) {
-					String token = st.nextToken();
-					switch (expect) {
-					case ConnectorOrAttribute:
-						if (token.equals("[")) {
-							expect = ParseExpect.AttributeDistance;
-							vc.down = current = right = new AttributeSet();
-							connectorLast = false;
-							break;
-						} else if (token.equals("{")) {
-							expect = ParseExpect.AttributeDistance;
-							connectorLast = false;
-							right = null;
-							vc = new VerticalConnection();
-							vc.up = current = left = new AttributeSet();
-							break;
-						}
-					case Connector:
-						if (connectorLast || vc == null) {
-							vc = new VerticalConnection();
-							left = right = null;
-						}
-						vc.connector = token;
-						verticalConnectors.add(vc);
-						connectorLast = true;
-						expect = ParseExpect.ConnectorOrAttribute;
-						break;
-					case AttributeDistance:
-						current.distance = Integer.parseInt(token);
-						expect = ParseExpect.AttributeCapacity;
-						break;
-					case AttributeCapacity:
-						current.capacity = Integer.parseInt(token);
-						expect = ParseExpect.TrafficLightOffsetOrAttributeEnd;
-						break;
-					case TrafficLightOffsetOrAttributeEnd:
-						if (!token.equals("]") && !token.equals("}")) {
-							current.trafficLightOffset = Integer
-									.parseInt(token);
-							expect = ParseExpect.TrafficLightGreenCycle;
-							break;
-						}
-					case AttributeEnd:
-						if (token.equals("}")) {
-							expect = ParseExpect.Connector;
-						} else if (token.equals("]"))
-							expect = ParseExpect.ConnectorOrAttribute;
-						else
-							throw new Exception("unexpected symbol");
-						break;
-					case TrafficLightGreenCycle:
-						current.trafficLightGreenCycle = Integer
-								.parseInt(token);
-						expect = ParseExpect.TrafficLightRedCycle;
-						break;
-					case TrafficLightRedCycle:
-						current.trafficLightRedCycle = Integer.parseInt(token);
-						expect = ParseExpect.AttributeEnd;
-						break;
-					}
-				}
-				mixedRow = true;
-			}
-		}
-		/* set vehicles */
-		List<Vehicle> va = parseVehicleList(vehicles);
 		/* generate simulation */
-		simulation = new Simulation(
-				new Graph(nodes.values().toArray(new Node[]{})),
-				va.toArray(new Vehicle[]{}),ea.toArray(new Edge[]{}), algo);
+		simulation = new Simulation(new Graph(mp.getNodes()),
+				parseVehicleList(vehicles), mp.getEdges(), algo);
 
-		ArrayList<Node[]> temp = new ArrayList<Node[]>();
-		for (List<Node> a : matrix)
-			temp.add(a.toArray(new Node[] {}));
-		this.matrix = temp.toArray(new Node[][] {});
+		this.matrix = mp.getMatrix();
 	}
 
-	private List<Vehicle> parseVehicleList (String str) {
+	private Vehicle[] parseVehicleList (String str) {
 		StringTokenizer parser = new StringTokenizer(str, "\n");
 		ArrayList<Vehicle> va = new ArrayList<Vehicle>();
 		while (parser.hasMoreElements()) {
 			StringTokenizer st = new StringTokenizer(parser.nextToken());
-			Node from = nodes.get(st.nextElement());
-			Node to = nodes.get(st.nextElement());
-			Node target = nodes.get(st.nextElement());
+			Node from = mp.getNode((String) st.nextElement());
+			Node to = mp.getNode((String) st.nextElement());
+			Node target = mp.getNode((String) st.nextElement());
 			for (Edge e : from.getOutgoingEdges())
 				if (e.getOutgoingNode() == to) {
 					Vehicle v = new Vehicle(e, target,""+(++vid));
@@ -330,7 +119,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 					va.add(v);
 				}
 		}
-		return va;
+		return va.toArray(new Vehicle[]{});
 	}
 
 	public Simulation getSimulation () {
@@ -376,10 +165,10 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 	}
 	
 	private float[] computePosition (Edge e, int milage) {
-		ManhattenPosition mp = edgePosition.get(e);
-		int z = mp.getDirection();
-		float x = (float)(mp.getX() + (z >> 1)) * (edgeLength + nodeSideLength) - edgeLength;
-		float y = (float)((mp.getY() - 1) - (z >> 1)) * (nodeSideLength + edgeLength + nodeBorderSize);
+		ManhattenPosition pos = mp.getPosition(e);
+		int z = pos.getDirection();
+		float x = (float)(pos.getX() + (z >> 1)) * (edgeLength + nodeSideLength) - edgeLength;
+		float y = (float)((pos.getY() - 1) - (z >> 1)) * (nodeSideLength + edgeLength + nodeBorderSize);
 		float[] results = new float[] {
 				(z & 1) * (edgeLength - carLength) + ((z & 1) == 1 ? -1 : 1) *
 				(((float) milage) / (float) e.getDistance()) * (edgeLength - carLength),
