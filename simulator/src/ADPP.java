@@ -1,13 +1,20 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Collections;
 
-public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
+public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
 
-	private HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
-	private HashMap<Vehicle, List<CarReservation>> vehicleRoutes = new HashMap<Vehicle, List<CarReservation>>();
+	protected HashMap<Reservation, Integer> reservationTable = new HashMap<Reservation, Integer>();
+	protected HashMap<Vehicle, List<CarReservation>> vehicleRoutes = new HashMap<Vehicle, List<CarReservation>>();
 	
-	private int getCongestion(Edge e, int t, int m) {
+	protected HashMap<Vehicle, List<Message>> inbox = new HashMap<Vehicle, List<Message>>();
+	protected HashMap<Vehicle, Integer> priority = new HashMap<Vehicle, Integer>();
+	public static HashMap<Edge, Integer> edgeID = new HashMap<Edge, Integer>();
+	public static TrafficMonitor trafficMonitor = new TrafficMonitor();
+	
+	protected int getCongestion(Edge e, int t, int m) {
 		int congestion = 0;
 		Reservation tmp = new Reservation(e, t, m);
 		if (reservationTable.containsKey(tmp))
@@ -27,8 +34,24 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 	
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
-		
+	
+		for (int i = 0; i < edges.length; i++) 
+			edgeID.put(edges[i], i);
+
+		// init inboxes
+		for (Vehicle v : vehicles) 
+			inbox.put(v, new LinkedList<Message>());
+			
+		// set priorities
+		LinkedList<Integer> tmpll = new LinkedList<Integer>();
+		for (int i = 0; i < vehicles.length; i++) 
+			tmpll.add(i);
+		//Collections.shuffle(tmpll);
+		for (Vehicle v : vehicles) 
+			priority.put(v, tmpll.removeLast());
+	
 		for (Vehicle v : vehicles) {
+		
 			List<CarReservation> reservations = new ArrayList<CarReservation>();
 			vehicleRoutes.put(v, reservations);
 			
@@ -67,11 +90,25 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 				edge = newE;
 				m = newM;
 			}
+			
+			Message msg = new Message(Message.createRouteMessage(priority.get(v), 0, reservations), v, 0);
+			for (Vehicle vv : vehicles) {
+				if (v != vv && priority.get(v) > priority.get(vv))  
+					sendMessage(v, vv, msg);
+			}
 		}
+		trafficMonitor.printReport(TrafficMonitor.PrettyPrint.YES);
+	}
+	
+	protected void sendMessage(Vehicle from, Vehicle to, Message msg) {
+		inbox.get(to).add(msg);
+		trafficMonitor.addMessage(msg);
 	}
 	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
+		if (vehicleRoutes.get(vehicle).size() < tick)
+			return null;
 		return vehicleRoutes.get(vehicle).get(tick).e;
 	}
 	
@@ -82,14 +119,6 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 			MovementRequest.CollisionStrategy.Aggressive;
 			
 	}
-	class CarReservation {
-		public Edge e;
-		public boolean defensive;
-		public CarReservation (Edge e, boolean defensive) {
-			this.e = e;
-			this.defensive = defensive;
-		}
-	};
 	class Reservation {
 		public Edge e;
 		public int t;

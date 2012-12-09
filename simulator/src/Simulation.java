@@ -86,8 +86,7 @@ public class Simulation {
 		resolveMovements(requests);
 		for (MovementRequest r : requests) {
 			if (r.getType() == MovementRequest.MovementType.FINISH)
-				//vehicles.remove(r.getVehicle());
-				--vehiclecount;
+				vehicles.remove(r.getVehicle());
 			if (handler != null)
 				handler.apply(r);
 			r.getVehicle().apply(r);
