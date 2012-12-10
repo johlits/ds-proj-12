@@ -114,14 +114,14 @@ public class Simulation {
 							else if (r2.getType() == MovementRequest.MovementType.FINISH &&
 									r2.getVehicle().getMilage() == r.getTo())
 								--delta;
-					System.out.printf("same requests: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
+					//System.out.printf("same requests: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
 					if ((done = same.size() + delta <= edge.getCapacity()))
 						continue;
-					System.out.printf("rejecting out some requests ...");
+					//System.out.printf("rejecting out some requests ...");
 					while (same.size() + delta > edge.getCapacity())
 						same.remove(new Random().nextInt(defensiveCount > 0 ?
 							defensiveCount-- : same.size())).stay();
-					System.out.printf("after rejecting: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
+					//System.out.printf("after rejecting: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
 					break;
 				}
 			}
@@ -135,7 +135,7 @@ public class Simulation {
 	}
 
 	public boolean isFinished() {
-		return vehiclecount == 0;
+		return vehicles.size() == 0;
 	}
 
 	public int getTick() {
