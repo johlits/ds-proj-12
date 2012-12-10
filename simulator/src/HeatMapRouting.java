@@ -1,17 +1,58 @@
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights implements RoutingAlgorithm {
-	/* index = time tick */
-	private ArrayList<HeatMap> maps = new ArrayList<HeatMap>();
+	private ArrayList<HeatMap<Edge>> maps = new ArrayList<HeatMap<Edge>>();
 	private Stack<PathEdge> path;
 
+	/* TODO heatmap should be rebuild regularly */
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
 		generateHeatmap(vehicles, 0);
 		printHeatMaps();
 	}
 	
+	@Override
+	public Edge nextEdge(Vehicle vehicle, int tick) {
+		if (maps.size() < tick)
+			return null;
+		return nextEdgeHeat(vehicle, vehicle.getPosition(), tick);
+	}
+
+	private int getHeat (int tick, Edge e) {
+		return maps.size() > tick ? maps.get(tick).getHeat(e) : 0;
+	}
+
+	/* TODO could maybe refactored into calculateDistance */
+	private Edge nextEdgeHeat(Vehicle vehicle, Edge edge, int tick) {
+		ArrayList<Edge> visited = new ArrayList<Edge>();
+		PriorityQueue<PathEdge> distances = new PriorityQueue<PathEdge>();
+		PathEdge spawn = new PathEdge(null, 0, edge);
+		spawn.setCongestion(0, 0.0);
+		distances.add(spawn);
+		PathEdge target = null;
+		/* calculate path distances */
+		while (!distances.isEmpty()) {
+			PathEdge current = distances.poll();
+			if (current.getEdge().getOutgoingNode() == vehicle.getTarget()) {
+				target = current;
+				break;
+			}
+			for (Edge e : getPossibilities(current.getEdge(), tick + current.getDistance())) {
+				if (visited.contains(e)) continue;
+				PathEdge d = calculateDistance(current, e, tick);
+				/* TODO just snapshot for this tick, or average over all ticks i would need to traval it? */
+				d.setCongestion(getHeat(tick + current.getDistance(), d.getEdge()),
+					current.getCongestion());
+				distances.offer(d);
+				visited.add(e);
+			}
+		}
+		/* build path to target node */
+		return getEdgeAfterSpawn(spawn, target);
+	}
+
 	private void printHeatMaps () {
 		int i = 0;
 		for (HeatMap m : maps)
@@ -25,7 +66,7 @@ public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights im
 		return ptr.getEdge();
 	}
 	
-	public void generateHeatmap(Vehicle[] vehicles, int tick) {
+	private void generateHeatmap(Vehicle[] vehicles, int tick) {
 		for (Vehicle v : vehicles) {
 			int m = v.getMilage();
 			int t = tick;
