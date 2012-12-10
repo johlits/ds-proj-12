@@ -56,7 +56,7 @@ public class Vehicle {
 		if (position == null)
 			return null;
 		if (milage < position.getDistance() - 1) {
-			return new MovementRequest(this, milage + 1, routing.getStrategy(this, milage + 1));
+			return new MovementRequest(this, milage + 1, routing.getStrategy(this, tick));
 		} else {
 			TrafficLight light = position.getTrafficLight();
 			if (light == null || light.isGreen(tick)) {
