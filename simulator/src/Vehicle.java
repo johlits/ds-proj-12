@@ -12,7 +12,7 @@ public class Vehicle {
 	public Vehicle (Edge position, Node target, String id) {
 		this.position = position;
 		this.target = target;
-		this.milage = position.getDistance();
+		this.milage = position.getDistance() - 1;
 		routingTable = new ArrayList<Entry>();
 		vehicleID = id;
 	}
@@ -55,7 +55,7 @@ public class Vehicle {
 	public MovementRequest move (int tick, RoutingAlgorithm routing) {
 		if (position == null)
 			return null;
-		if (milage < position.getDistance()) {
+		if (milage < position.getDistance() - 1) {
 			return new MovementRequest(this, milage + 1, routing.getStrategy(this, milage + 1));
 		} else {
 			TrafficLight light = position.getTrafficLight();
