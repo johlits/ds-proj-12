@@ -4,11 +4,16 @@ import java.util.PriorityQueue;
 public class LocalShortestPathRouting implements RoutingAlgorithm {
 
 	protected PathEdge calculateDistance (PathEdge a, Edge b, int tick) {
-		return new PathEdge(a, a.getEdge().getDistance() + b.getDistance(), b);
+		return new PathEdge(a, a.getDistance() + b.getDistance(), b);
 	}
 
 	protected Edge[] getPossibilities(Edge e, int t) {
 		return e.getOutgoingNode().getOutgoingEdges();
+	}
+
+	protected Edge getEdgeAfterSpawn (PathEdge spawn, PathEdge ptr) {
+		for (; ptr.getPrev() != spawn; ptr = ptr.getPrev());
+		return ptr.getEdge();
 	}
 
 	public MovementRequest.CollisionStrategy getStrategy(Vehicle vehicle, int tick) {
@@ -41,9 +46,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 			}
 		}
 		/* build path to target node */
-		PathEdge ptr;
-		for (ptr = target; ptr.getPrev() != spawn; ptr = ptr.getPrev());
-		return ptr.getEdge();
+		return getEdgeAfterSpawn(spawn, target);
 	}
 
 	@Override
