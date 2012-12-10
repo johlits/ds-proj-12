@@ -36,8 +36,8 @@ class MapGenerator {
 					for (int k = 0; k < distance; k++) 
 						for (int l = 0; l < capacity; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i][j],nodeNames[i][j+1],k));
-					int rdistance = rand.nextInt(10);
-					int rcapacity = rand.nextInt(10);
+					int rdistance = rand.nextInt(10)+1;
+					int rcapacity = rand.nextInt(10)+1;
 					int rtrafficLightOffset = rand.nextInt(10);
 					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
 					int rtrafficLightRedCycle = 1+rand.nextInt(9);
@@ -61,8 +61,8 @@ class MapGenerator {
 					for (int k = 0; k < distance; k++) 
 						for (int l = 0; l < capacity; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i+1][j],nodeNames[i-1][j],k));
-					int rdistance = rand.nextInt(10);
-					int rcapacity = rand.nextInt(10);
+					int rdistance = rand.nextInt(10)+1;
+					int rcapacity = rand.nextInt(10)+1;
 					int rtrafficLightOffset = rand.nextInt(10);
 					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
 					int rtrafficLightRedCycle = 1+rand.nextInt(9);
