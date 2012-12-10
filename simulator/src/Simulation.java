@@ -8,22 +8,23 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 public class Simulation {
 	private Graph graph;
 	private int time;
 	private List<Vehicle> vehicles;
-	private int vehiclecount;
 	private RoutingAlgorithm routing;
+	private ArrayList<Integer> vehicleFinishTimes;
 
 	public Simulation(Graph graph, Vehicle[] vehicles, Edge[] edges, RoutingAlgorithm routing) {
 		this.graph = graph;
 		this.vehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < vehicles.length; i++)
 			this.vehicles.add(vehicles[i]);
-		this.vehiclecount = vehicles.length;
 		this.time = 0;
 		this.routing = routing;
+		this.vehicleFinishTimes = new ArrayList<Integer>();
 		routing.init(vehicles, edges);
 	}
 	
@@ -85,8 +86,10 @@ public class Simulation {
 				requests.add(v.move(time, routing));
 		resolveMovements(requests);
 		for (MovementRequest r : requests) {
-			if (r.getType() == MovementRequest.MovementType.FINISH)
+			if (r.getType() == MovementRequest.MovementType.FINISH) {
 				vehicles.remove(r.getVehicle());
+				vehicleFinishTimes.add(time);
+			}
 			if (handler != null)
 				handler.apply(r);
 			r.getVehicle().apply(r);
@@ -161,5 +164,9 @@ public class Simulation {
 						e.getTrafficLight() == null ? "false" : "true");
 			}
 		}
+	}
+
+	public ArrayList<Integer> getVehicleFinishTimes () {
+		return this.vehicleFinishTimes;
 	}
 }
