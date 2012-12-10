@@ -11,6 +11,9 @@ class TrafficMonitor {
 	public TrafficMonitor() {
 		allMessages = new LinkedList<Message>();
 	}
+	public void reset() {
+		allMessages.clear();
+	}
 	public String getTotalTraffic(LinkedList<Message> messages) {
 		BigDecimal totalTraffic = BigDecimal.ZERO;
 		for (Message m : messages) 

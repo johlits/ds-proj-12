@@ -13,7 +13,7 @@ class MapGenerator {
 	}
 	public MapGenerator(int width, int height, int vehicles) {
 		// TODO fix this!
-		/*Kattio io = new Kattio(System.in, System.out);
+		Kattio io = new Kattio(System.in, System.out);
 		int app = 0;
 		io.println(height);
 		for (int i = 0; i < height; i++) {
@@ -31,7 +31,7 @@ class MapGenerator {
 			}
 		}
 		io.println("0");
-		io.close();*/
+		io.close();
 	}
 	public static void main(String[] args) {
 		if (args.length == 0)

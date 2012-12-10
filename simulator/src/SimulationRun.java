@@ -22,7 +22,7 @@ public class SimulationRun {
 		ManhattenLayout l = null;
 		try {
 			l = new ManhattenLayout(str.toString(), cars.toString(), 
-			new ADPPSmart());
+			new ADPPSmartKLocal(3, 1));
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

@@ -12,7 +12,7 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 	protected HashMap<Vehicle, List<Message>> inbox = new HashMap<Vehicle, List<Message>>();
 	protected HashMap<Vehicle, Integer> priority = new HashMap<Vehicle, Integer>();
 	public static HashMap<Edge, Integer> edgeID = new HashMap<Edge, Integer>();
-	public static TrafficMonitor trafficMonitor = new TrafficMonitor();
+	public TrafficMonitor trafficMonitor = new TrafficMonitor();
 	
 	protected int getCongestion(Edge e, int t, int m) {
 		int congestion = 0;
@@ -34,7 +34,7 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 	
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
-	
+
 		for (int i = 0; i < edges.length; i++) 
 			edgeID.put(edges[i], i);
 

@@ -22,7 +22,9 @@ public class SilentSimulationRun {
 				new ADPPSmart(),
 				new LocalShortestPathRouting(),
 				new LocalShortestPathRoutingWithTrafficLights(),
-				new LocalShortestPathRoutingWithTrafficLightsAndReservation()
+				new LocalShortestPathRoutingWithTrafficLightsAndReservation(),
+				new ADPPKLocal(3, 1), // depth 3, 1 car hop
+				new ADPPSmartKLocal(3, 1)
 		};
 		
 		/* measure algorithms */
