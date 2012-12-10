@@ -147,7 +147,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 								carLength,
 								carWidth,
 								x + 	((1-j) * (edgeLength - carLength)) + (j == 0 ? -1 : 1) *
-										(((float) v.getMilage()) / (float) edge.getDistance())* (edgeLength - carLength),
+										(((float) v.getMilage()) / (float) (edge.getDistance()-1.0))* (edgeLength - carLength),
 										y + edgeMargin
 										+ carMargin + j * (edgeMargin + edgeWidth),
 								0, anim ? records.get(v) : null);
@@ -170,7 +170,7 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 		float y = (float)((pos.getY() - 1) - (z >> 1)) * (nodeSideLength + edgeLength + nodeBorderSize);
 		float[] results = new float[] {
 				(z & 1) * (edgeLength - carLength) + ((z & 1) == 1 ? -1 : 1) *
-				(((float) milage) / (float) e.getDistance()) * (edgeLength - carLength),
+				(((float) milage) / (float) (e.getDistance()-1.0)) * (edgeLength - carLength),
 				edgeMargin + carMargin + ((z == 0 || z == 3) ? (edgeMargin + edgeWidth) : 0f), 
 				0 };
 		if ((z >> 1) == 1)
