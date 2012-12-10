@@ -26,7 +26,7 @@ class TrafficMonitor {
 		BigDecimal totalTraffic = BigDecimal.ZERO;
 		for (Message m : messages) 
 			totalTraffic = totalTraffic.add(BigDecimal.valueOf(m.getLength()));
-		return totalTraffic.divide(BigDecimal.valueOf(messages.size())).doubleValue();
+		return totalTraffic.divide(BigDecimal.valueOf(messages.size()),RoundingMode.HALF_UP).doubleValue();
 	}
 	public double getMedianMessageLength(LinkedList<Message> messages) {
 		if (messages.size() == 0)
