@@ -12,7 +12,7 @@ public class SilentSimulationRun {
 				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
 				"e * f * g * [ 2 1 ] h\n" +
 				"*   *   * [ 1 1 ] * [ 5 5 ]\n" +
-				"i * j * [ 1 1 2 5 5 ] k * [ 1 1 30 5 5 ] l";
+				"i < j * [ 1 1 2 5 5 ] k * [ 1 1 30 5 5 ] l";
 		String cars = "a b l\nc d l\ne f l";
 		
 		RoutingAlgorithm[] algos = new RoutingAlgorithm[] { 
