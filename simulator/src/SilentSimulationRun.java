@@ -8,12 +8,16 @@ public class SilentSimulationRun {
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.US);
 		
-		String str = "a { 1 1 0 1 1 } * [ 1 1 0 1 1 ] b * c * [ 7 7 ] d\n" +
-				"{ 1 1 5 5 5 } *  { 1 1 5 5 5 } ^   v   ^\n" +
-				"e * f * g * [ 2 1 ] h\n" +
-				"*   *   * [ 1 1 ] * [ 5 5 ]\n" +
-				"i < j * [ 1 1 2 5 5 ] k * [ 1 1 30 5 5 ] l";
-		String cars = "a b l\nc d l\ne f l";
+		StringBuilder str = new StringBuilder("");
+		StringBuilder cars = new StringBuilder("");
+		
+		Kattio io = new Kattio(System.in, System.out);
+		int lines = io.getInt();
+		for (int i = 0; i < lines; i++) 
+			str.append(io.readLine()+"\n");
+		lines = io.getInt();
+		for (int i = 0; i < lines; i++) 
+			cars.append(io.readLine()+"\n");
 		
 		RoutingAlgorithm[] algos = new RoutingAlgorithm[] { 
 				new RandomRouting(),
@@ -54,7 +58,10 @@ public class SilentSimulationRun {
 			System.out.printf(" car stats:\n  min time: %d\n  max time: %d\n  avg time: %f\n  median: %f\n",
 				carStats.get(0), carStats.get(carStats.size() - 1), calculateAverage(carStats), calculateMedian(carStats));
 		}
+		io.close();
 	}
+	
+
 
 	public static double calculateAverage (List<Integer> values) {
 		int sum = 0;

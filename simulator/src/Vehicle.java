@@ -9,10 +9,10 @@ public class Vehicle {
 	private ArrayList<Entry> routingTable;
 	private String vehicleID;
 	
-	public Vehicle (Edge position, Node target, String id) {
+	public Vehicle (Edge position, int milage, Node target, String id) {
 		this.position = position;
 		this.target = target;
-		this.milage = position.getDistance();
+		this.milage = milage;
 		routingTable = new ArrayList<Entry>();
 		vehicleID = id;
 	}

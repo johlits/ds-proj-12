@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import java.lang.Integer;
 
 public class ManhattenLayout implements MovementRequestApplyHandler {
 	private Node[][] matrix;
@@ -109,9 +110,10 @@ public class ManhattenLayout implements MovementRequestApplyHandler {
 			Node from = mp.getNode((String) st.nextElement());
 			Node to = mp.getNode((String) st.nextElement());
 			Node target = mp.getNode((String) st.nextElement());
+			int m = Integer.parseInt((String) st.nextElement());
 			for (Edge e : from.getOutgoingEdges())
 				if (e.getOutgoingNode() == to) {
-					Vehicle v = new Vehicle(e, target,""+(++vid));
+					Vehicle v = new Vehicle(e, m, target,""+(++vid));
 					e.addVehicle(v);
 					va.add(v);
 				}
