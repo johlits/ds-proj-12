@@ -2,6 +2,6 @@ public class LocalShortestPathRoutingWithTrafficLights extends LocalShortestPath
 	protected PathEdge calculateDistance (PathEdge a, Edge b, int tick) {
 		return new PathEdge(a, a.getDistance() + b.getDistance() +
 			(b.getTrafficLight() == null ? 0 :b.getTrafficLight()
-					.remainingWaitingTime(tick + a.getEdge().getDistance() + b.getDistance())), b);
+					.remainingWaitingTime(tick + a.getDistance() + b.getDistance())), b);
 	}
 }
