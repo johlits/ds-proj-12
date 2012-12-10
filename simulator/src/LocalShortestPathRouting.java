@@ -38,7 +38,7 @@ public class LocalShortestPathRouting implements RoutingAlgorithm {
 				target = current;
 				break;
 			}
-			for (Edge e : getPossibilities(current.getEdge(), tick + current.getEdge().getDistance())) {
+			for (Edge e : getPossibilities(current.getEdge(), tick + current.getDistance())) {
 				if (visited.contains(e)) continue;
 				PathEdge d = calculateDistance(current, e, tick);
 				distances.offer(d);
