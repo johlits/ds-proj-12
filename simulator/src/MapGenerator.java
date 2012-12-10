@@ -29,7 +29,7 @@ class MapGenerator {
 				io.print(String.format("%s",nodeNames[i][0]));
 				for (int j = 0; j < width-1; j++) {
 					int distance = rand.nextInt(10);
-					int capacity = rand.nextInt(10);
+					int capacity = rand.nextInt(10) + 1;
 					int trafficLightOffset = rand.nextInt(10);
 					int trafficLightGreenCycle = 1+rand.nextInt(9);
 					int trafficLightRedCycle = 1+rand.nextInt(9);
