@@ -32,11 +32,11 @@ public class ADPPSmart extends ADPP implements RoutingAlgorithm {
 			int m = v.getMilage();
 			int congestion = 0;
 			
-			for (int t = 0;m < edge.getDistance() || edge.getOutgoingNode() != v.getTarget() ||
+			for (int t = 0;m < edge.getDistance() - 1 || edge.getOutgoingNode() != v.getTarget() ||
 					(edge.getTrafficLight() != null && !edge.getTrafficLight().isGreen(t)); t++) {
 				int newM;
 				Edge newE;
-				if (m < edge.getDistance()) {
+				if (m < edge.getDistance() - 1) {
 					newM = m + 1;
 					newE = edge;
 				} else if (edge.getTrafficLight() != null && !edge.getTrafficLight().isGreen(t)) {
