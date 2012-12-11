@@ -10,14 +10,14 @@ public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights im
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
 		generateHeatmap(vehicles, 0);
-		printHeatMaps();
+		//printHeatMaps();
 	}
 	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
-		if (maps.size() < tick)
-			return null;
-		return nextEdgeHeat(vehicle, vehicle.getPosition(), tick);
+		if (maps.size() > tick)
+			return nextEdgeHeat(vehicle, vehicle.getPosition(), tick);
+		return super.nextEdge(vehicle, tick);
 	}
 
 	private int getHeat (int tick, Edge e) {
@@ -72,12 +72,12 @@ public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights im
 			int t = tick;
 			/* the way to the next edge */
 			Edge pos = v.getPosition();
-			System.out.printf("Vehicle: %s, start: %s\n", v, v.getPosition());
+			//System.out.printf("Vehicle: %s, start: %s\n", v, v.getPosition());
 			int diff = pos.getDistance() - m;
 			TrafficLight tl = pos.getTrafficLight();
 			if (tl != null)
 				diff += tl.remainingWaitingTime(t + diff - 1);
-			System.out.printf("initial diff = %d\n", diff);
+			//System.out.printf("initial diff = %d\n", diff);
 			heat (v.getPosition(), t, t + diff);
 			t += diff;
 			/* compute route to target */
@@ -87,7 +87,7 @@ public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights im
 			while (!path.isEmpty()) {
 				PathEdge p = path.pop();
 				heat (p.getEdge(), t + off, t + p.getDistance());
-				System.out.printf("[%s]: %d -> %d\n", v, t + off, t + p.getDistance());
+				//System.out.printf("[%s]: %d -> %d\n", v, t + off, t + p.getDistance());
 				off = p.getDistance();
 			}
 		}
