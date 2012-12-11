@@ -99,15 +99,19 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
 		if (vehicleRoutes.get(vehicle).size() < tick)
-			return null;
+			return super.nextEdge(vehicle, tick);
 		return vehicleRoutes.get(vehicle).get(tick).e;
 	}
 	
 	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
-		CarReservation r = vehicleRoutes.get(v).get(tick);
-		return r.defensive ?
-			MovementRequest.CollisionStrategy.Defensive :
-			MovementRequest.CollisionStrategy.Aggressive;
+		List<CarReservation> cr = vehicleRoutes.get(v);
+		if (cr.size() > tick) {
+			CarReservation r = cr.get(tick);
+			return r.defensive ?
+				MovementRequest.CollisionStrategy.Defensive :
+				MovementRequest.CollisionStrategy.Aggressive;
+		} else
+			return MovementRequest.CollisionStrategy.Defensive;
 			
 	}
 	class Reservation {
