@@ -15,6 +15,8 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 		return congestion;
 	}
 	
+	// we already check congestion
+	/*
 	protected Edge[] getPossibilities(Edge e, int t) {
 		ArrayList<Edge> possibilities = new ArrayList<Edge>();
 		for (Edge oe : e.getOutgoingNode().getOutgoingEdges()) {
@@ -24,6 +26,7 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 		}
 		return possibilities.toArray(new Edge[]{});
 	}
+	*/
 	
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
@@ -59,13 +62,13 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(new CarReservation(newE, false));
+					edge = newE;
+					m = newM;
 				} else {
 					tmp = new Reservation(edge, t, m);
 					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
 					reservations.add(new CarReservation(newE, true));
 				}
-				edge = newE;
-				m = newM;
 			}
 		}
 	}

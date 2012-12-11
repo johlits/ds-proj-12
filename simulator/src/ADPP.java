@@ -22,16 +22,6 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 		return congestion;
 	}
 	
-	protected Edge[] getPossibilities(Edge e, int t) {
-		ArrayList<Edge> possibilities = new ArrayList<Edge>();
-		for (Edge oe : e.getOutgoingNode().getOutgoingEdges()) {
-			int c = getCongestion(oe, t, 0);
-			if (c < e.getCapacity())
-				possibilities.add(oe);
-		}
-		return possibilities.toArray(new Edge[]{});
-	}
-	
 	@Override
 	public void init(Vehicle[] vehicles, Edge[] edges) {
 
@@ -82,13 +72,13 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(new CarReservation(newE, false));
+					edge = newE;
+					m = newM;
 				} else {
 					tmp = new Reservation(edge, t, m);
 					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
 					reservations.add(new CarReservation(newE, true));
 				}
-				edge = newE;
-				m = newM;
 			}
 			
 			Message msg = new Message(Message.createRouteMessage(priority.get(v), 0, reservations), v, 0);

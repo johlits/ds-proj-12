@@ -134,13 +134,13 @@ public class ADPPKLocal extends ADPPSmart implements RoutingAlgorithm {
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(new CarReservation(newE, false));
+					edge = newE;
+					m = newM;
 				} else {
 					tmp = new Reservation(edge, t, m);
 					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
 					reservations.add(new CarReservation(newE, true));
 				}
-				edge = newE;
-				m = newM;
 			}
 			
 			Message msg = new Message(Message.createRouteMessage(priority.get(v), 0, reservations), v, 0);
