@@ -51,7 +51,8 @@ public class ADPPSmart extends ADPP implements RoutingAlgorithm {
 				Reservation tmp;
 				
 				if (congestion < newE.getCapacity() &&
-						(edge.getTrafficLight() == null || edge.getTrafficLight().isGreen(t))) {
+						((m < edge.getDistance() - 1) ||
+								edge.getTrafficLight() == null || edge.getTrafficLight().isGreen(t))) {
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(new CarReservation(newE, false));

@@ -39,26 +39,30 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 			int m = v.getMilage();
 			int congestion = 0;
 			
+			//System.out.printf("calculating route for %s [%s@%d]...\n", v, edge, m);
 			for (int t = 0;m < edge.getDistance() - 1 || edge.getOutgoingNode() != v.getTarget() ||
 					(edge.getTrafficLight() != null && !edge.getTrafficLight().isGreen(t)); t++) {
 				int newM;
 				Edge newE;
+				String reason = "";
 				if (m < edge.getDistance() - 1) {
 					newM = m + 1;
 					newE = edge;
 				} else if (edge.getTrafficLight() != null && !edge.getTrafficLight().isGreen(t)) {
 					newM = m;
 					newE = edge;
+					//reason = "traffic light, ";
 				} else {
 					newE = super.nextEdge(v, edge, t);
 					newM = 0;
 				}
-			
+
 				congestion = getCongestion(newE, t, newM);
 				Reservation tmp;
-				
+				//System.out.printf("plan %d: [%s@%d] -> [%s@%d] ", t, edge, m, newE, newM, reason);
 				if (congestion < newE.getCapacity() &&
-						(edge.getTrafficLight() == null || edge.getTrafficLight().isGreen(t))) {
+						((m < edge.getDistance() - 1) ||
+								edge.getTrafficLight() == null || edge.getTrafficLight().isGreen(t))) {
 					tmp = new Reservation(newE, t, newM);
 					reservationTable.put(tmp, congestion+1);
 					reservations.add(new CarReservation(newE, false));
@@ -68,8 +72,11 @@ public class LocalShortestPathRoutingWithTrafficLightsAndReservation extends Loc
 					tmp = new Reservation(edge, t, m);
 					reservationTable.put(tmp, getCongestion(edge, t, m) + 1);
 					reservations.add(new CarReservation(newE, true));
+					//reason += (edge.getTrafficLight() != null && edge.getTrafficLight().isGreen(t)) ? "over capacity" :"traffic light";
 				}
+				//System.out.println(reason);
 			}
+			//System.out.println("finished calculation");
 		}
 	}
 	
