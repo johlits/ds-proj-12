@@ -98,9 +98,9 @@ public class ADPP extends LocalShortestPathRoutingWithTrafficLights implements R
 	
 	@Override
 	public Edge nextEdge(Vehicle vehicle, int tick) {
-		if (vehicleRoutes.get(vehicle).size() < tick)
-			return super.nextEdge(vehicle, tick);
-		return vehicleRoutes.get(vehicle).get(tick).e;
+		if (vehicleRoutes.get(vehicle).size() > tick)
+			return vehicleRoutes.get(vehicle).get(tick).e;
+		return super.nextEdge(vehicle, tick);
 	}
 	
 	public MovementRequest.CollisionStrategy getStrategy(Vehicle v, int tick) {
