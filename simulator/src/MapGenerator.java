@@ -14,78 +14,65 @@ class MapGenerator {
 		io.println(cars);
 		io.close();
 	}
-	public MapGenerator(int width, int height, int vehicles) {
-		Kattio io = new Kattio(System.in, System.out);
-		String[][] nodeNames = new String[height*2][width];
-		int app = 0;
-		for (int i = 0; i < height*2; i+=2)
-			for (int j = 0; j < width; j++) 
-				nodeNames[i][j] = "v"+(app++);
-		io.println(height*2-1);
-		for (int i = 0; i < height*2-1; i++) {
-			if (i%2 == 0) {
-				String aNode = "v"+(app++);
-				String bNode = "v"+(app++);
-				io.print(String.format("%s",nodeNames[i][0]));
-				for (int j = 0; j < width-1; j++) {
-					int distance = rand.nextInt(10) + 1;
-					int capacity = rand.nextInt(10) + 1;
-					int trafficLightOffset = rand.nextInt(10);
-					int trafficLightGreenCycle = 1+rand.nextInt(9);
-					int trafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
-							startingLocations.add(new StartingLocation(nodeNames[i][j],nodeNames[i][j+1],k));
-					int rdistance = rand.nextInt(10)+1;
-					int rcapacity = rand.nextInt(10)+1;
-					int rtrafficLightOffset = rand.nextInt(10);
-					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
-					int rtrafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < rdistance; k++) 
-						for (int l = 0; l < rcapacity; l++) 
-							startingLocations.add(new StartingLocation(nodeNames[i][j+1],nodeNames[i][j],k));
-					io.print(String.format(" { %d %d %d %d %d } * [ %d %d %d %d %d ] %s", 
-						distance, capacity, trafficLightOffset, trafficLightGreenCycle, trafficLightRedCycle, 
-						rdistance, rcapacity, rtrafficLightOffset, rtrafficLightGreenCycle, rtrafficLightRedCycle, 
-						nodeNames[i][j+1]));
-				}
-				io.println();
-			}
-			else {
-				for (int j = 0; j < width; j++) {
-					int distance = rand.nextInt(10)+1;
-					int capacity = rand.nextInt(10)+1;
-					int trafficLightOffset = rand.nextInt(10);
-					int trafficLightGreenCycle = 1+rand.nextInt(9);
-					int trafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
-							startingLocations.add(new StartingLocation(nodeNames[i+1][j],nodeNames[i-1][j],k));
-					int rdistance = rand.nextInt(10)+1;
-					int rcapacity = rand.nextInt(10)+1;
-					int rtrafficLightOffset = rand.nextInt(10);
-					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
-					int rtrafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
-							startingLocations.add(new StartingLocation(nodeNames[i-1][j],nodeNames[i+1][j],k));
-					io.print(String.format(" { %d %d %d %d %d } * [ %d %d %d %d %d ] ", 
-						distance, capacity, trafficLightOffset, trafficLightGreenCycle, trafficLightRedCycle, 
-						rdistance, rcapacity, rtrafficLightOffset, rtrafficLightGreenCycle, rtrafficLightRedCycle));
-				}
-				io.println();
-			}
-		}
-		io.println(vehicles);
-		Collections.shuffle(startingLocations);
-		for (int i = 0; i < vehicles; i++) {
-			StartingLocation tmp = startingLocations.removeFirst();
-			int g = rand.nextInt(width*height);
-			io.println(tmp.aNode + " " + tmp.bNode + " v" + g + " " + tmp.m);
-		}
-		
-		io.close();
+
+	private String generateCellName (int row, int col) {
+		return String.format("r%dc%d", row, col);
 	}
+
+	private AttributeSet generateRandomAttributes () {
+		AttributeSet attrset = new AttributeSet();
+		attrset.distance = rand.nextInt(10) + 1;
+		attrset.capacity = rand.nextInt(10) + 1;
+		if (rand.nextBoolean()) { // traffic light?
+			attrset.trafficLightOffset = rand.nextInt(10);
+			attrset.trafficLightGreenCycle = rand.nextInt(10) + 1;
+			attrset.trafficLightRedCycle = rand.nextInt(10) + 1;
+		}
+		return attrset;
+	}
+
+	public MapGenerator (int cols, int rows, int vehicles) {
+		String t = Integer.toString(2 * rows - 1) + "\n";
+		for (int r = 0; r < 2 * rows - 1; r++) {
+			/* horizontal connector row + nodes */
+			for (int c = 0; c < cols - (~r & 1); c++) {
+				AttributeSet[] sets = new AttributeSet[] {
+					generateRandomAttributes(),
+					generateRandomAttributes()
+				};
+				t += ((r & 1) == 0 ? generateCellName (r/2, c) + " " : "")
+						+ "{ " + sets[0] + " } * [ " + sets[1] + " ] ";
+				/* add start point */
+				for (int s = 0; s < 2; s++)
+					for (int d = 0; d < sets[s].distance; d++)
+						for (int z = 0; z < sets[s].capacity; z++)
+							startingLocations.add (
+								(r & 1) == 0 ?
+								new StartingLocation (
+									generateCellName (r/2, c + s),
+									generateCellName (r/2, c + (1 - s)), d):
+								new StartingLocation (
+									generateCellName ((r-1+(2*s))/2, c),
+									generateCellName ((r+1-(2*s))/2, c), d)
+							);
+			}
+			if ((r & 1) == 0)
+				t += generateCellName (r/2, cols - 1);
+			t += "\n";
+		}
+		System.out.println(t);
+		Collections.shuffle(startingLocations);
+		int i;
+		t = "";
+		for (i = 0; i < vehicles && !startingLocations.isEmpty(); i++) {
+			StartingLocation tmp = startingLocations.removeFirst();
+			t += String.format("%s %s %s %d\n", tmp.aNode, tmp.bNode,
+				generateCellName(rand.nextInt(rows), rand.nextInt(cols)), tmp.m);
+		}
+		System.out.println(Integer.toString(i));
+		System.out.println(t);
+	}
+
 	class StartingLocation {
 		private String aNode, bNode;
 		private int m;
