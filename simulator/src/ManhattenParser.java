@@ -106,7 +106,7 @@ public class ManhattenParser {
 						new String[] { "*", ">" }, new String[] { "*", "<" },
 						new String[] { "*", "v" }, new String[] { "*", "^" } };
 				final Node[] rel = new Node[4];
-				final AttributeSet[] attrs = new AttributeSet[] { right, left, null, null };
+				final AttributeSet[] attrs = new AttributeSet[] { left, right, null, null };
 				if (connector != null) {
 					rel[0] = row.peek();
 					rel[1] = node;
@@ -165,14 +165,14 @@ public class ManhattenParser {
 			case ConnectorOrAttribute:
 				if (token.equals("[")) {
 					expect = ParseExpect.ConnectorOrAttribute;
-					vc.down = parseAttributeSet(st, "]");
+					vc.up = parseAttributeSet(st, "]");
 					connectorLast = false;
 					break;
 				} else if (token.equals("{")) {
 					expect = ParseExpect.Connector;
 					connectorLast = false;
 					vc = new VerticalConnection();
-					vc.up = parseAttributeSet(st, "}");
+					vc.down = parseAttributeSet(st, "}");
 					break;
 				}
 			case Connector:
