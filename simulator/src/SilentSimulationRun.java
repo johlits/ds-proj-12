@@ -7,7 +7,6 @@ public class SilentSimulationRun {
 	
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.US);
-		
 		StringBuilder str = new StringBuilder("");
 		StringBuilder cars = new StringBuilder("");
 		
@@ -20,13 +19,14 @@ public class SilentSimulationRun {
 			cars.append(io.readLine()+"\n");
 		
 		RoutingAlgorithm[] algos = new RoutingAlgorithm[] { 
-				//new RandomRouting(),
-				//new SimpleRouting(),
-				//new ADPP(),
-				//new ADPPSmart(),
-				//new LocalShortestPathRouting(),
-				//new LocalShortestPathRoutingWithTrafficLights(),
-				//new LocalShortestPathRoutingWithTrafficLightsAndReservation()
+				new RandomRouting(),
+				new SimpleRouting(),
+				new ADPP(),
+				new ADPPSmart(),
+				new LocalShortestPathRouting(),
+				new LocalShortestPathRoutingWithTrafficLights(),
+				new LocalShortestPathRoutingWithTrafficLightsAndReservation(),
+				new HeatMapRouting(),
 				new ADPPKLocal(3, 1), // depth 3, 1 car hop
 				new ADPPSmartKLocal(3, 1)
 		};
@@ -41,7 +41,7 @@ public class SilentSimulationRun {
 				e1.printStackTrace();
 			}
 			Simulation sim = ml.getSimulation();
-			int upperlimit = 100000;
+			int upperlimit = 20000;
 			int i = 0;
 			for (i = 0; !sim.isFinished() && i < upperlimit; i++)
 				sim.progress();
