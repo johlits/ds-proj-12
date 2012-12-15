@@ -128,7 +128,7 @@ public class Simulation {
 					//System.out.printf("rejecting out some requests ...");
 					while (same.size() > 0 && same.size() + delta > edge.getCapacity())
 						same.remove(new Random().nextInt(defensiveCount > 0 ?
-							defensiveCount-- : same.size())).stay();
+							defensiveCount-- : same.size())).reject();
 					if (same.size() == 0 && delta > edge.getCapacity()) {
 						System.out.println("We got a problem here Houston");
 					}

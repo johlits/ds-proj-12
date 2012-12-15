@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class MovementRequest {
 	private Vehicle vehicle;
@@ -5,6 +7,8 @@ public class MovementRequest {
 	private int to = 0;
 	private MovementType type = MovementType.MOVE;
 	private CollisionStrategy strategy = CollisionStrategy.Defensive;
+	/* in case an option is blocked, keep track of remaining available options */
+	private ArrayList<Edge> options = null;
 	
 	enum MovementType {
 		MOVE,
@@ -59,7 +63,20 @@ public class MovementRequest {
 		return vehicle;
 	}
 	
-	public void stay () {
+	public void reject () {
+		if (target != vehicle.getPosition()) {
+			if (options == null) {
+				options = new ArrayList<Edge>();
+				Node current = vehicle.getPosition().getOutgoingNode();
+				for (Edge e : current.getOutgoingEdges())
+					if  (e != this.target)
+						options.add(e);
+			}
+			if (options.size() > 0) {
+				this.target = options.remove(0);
+				return;
+			}
+		}
 		this.type = MovementType.STAY;
 		this.to = vehicle.getMilage();
 		this.target = vehicle.getPosition();
