@@ -84,7 +84,7 @@ public class Simulation {
 		for (Vehicle v : vehicles)
 			if (v.getPosition() != null)
 				requests.add(v.move(time, routing));
-		resolveMovements(requests);
+		requests = resolveMovements(requests);
 		for (MovementRequest r : requests) {
 			if (r.getType() == MovementRequest.MovementType.FINISH) {
 				vehicles.remove(r.getVehicle());
@@ -92,6 +92,9 @@ public class Simulation {
 			}
 			if (handler != null)
 				handler.apply(r);
+			/*System.out.printf("tick %d: [%s@%d] -> [%s@%d] (%s)\n", time,
+					r.getVehicle().getPosition(), r.getVehicle().getMilage(),
+					r.getTarget(), r.getTo(), r.getType().name());*/
 			r.getVehicle().apply(r);
 		}
 		++time;
@@ -99,8 +102,10 @@ public class Simulation {
 			handler.nextTick();
 	}
 
-	private void resolveMovements (List<MovementRequest> requests) {
-		for (boolean done = false; !done; done = true) {
+	private List<MovementRequest> resolveMovements (List<MovementRequest> requests) {
+		boolean done = true;
+		do {
+			done = true;
 			for (MovementRequest r : requests) {
 				if (r.getType() == MovementRequest.MovementType.MOVE) {
 					Edge edge = r.getTarget();
@@ -118,17 +123,22 @@ public class Simulation {
 									r2.getVehicle().getMilage() == r.getTo())
 								--delta;
 					//System.out.printf("same requests: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
-					if ((done = same.size() + delta <= edge.getCapacity()))
+					if (same.size() + delta <= edge.getCapacity())
 						continue;
 					//System.out.printf("rejecting out some requests ...");
-					while (same.size() + delta > edge.getCapacity())
+					while (same.size() > 0 && same.size() + delta > edge.getCapacity())
 						same.remove(new Random().nextInt(defensiveCount > 0 ?
 							defensiveCount-- : same.size())).stay();
+					if (same.size() == 0 && delta > edge.getCapacity()) {
+						System.out.println("We got a problem here Houston");
+					}
 					//System.out.printf("after rejecting: %d + %d (delta), capacity = %d\n", same.size(), delta, edge.getCapacity());
+					done = false;
 					break;
 				}
 			}
-		}
+		} while (!done);
+		return requests;
 	}
 
 	public void finish() {
@@ -152,15 +162,19 @@ public class Simulation {
 			Edge[] incoming = node.getIncomingEdges();
 			System.out.printf("incoming edges: %d\n", incoming.length);
 			for (Edge e : incoming) {
-				System.out.printf(" edge, vehicles: %d, traffic light? %s\n", e
-						.getVehicleCount(),
+				System.out.printf(" edge [%s], distance: %d, cap: %d, vehicles: %d, traffic light? %s\n", e,
+						e.getDistance(),
+						e.getCapacity(),
+						e.getVehicleCount(),
 						e.getTrafficLight() == null ? "false" : "true");
 			}
 			Edge[] outgoing = node.getOutgoingEdges();
 			System.out.printf("outgoing edges: %d\n", incoming.length);
 			for (Edge e : outgoing) {
-				System.out.printf(" edge, vehicles: %d, traffic light? %s\n", e
-						.getVehicleCount(),
+				System.out.printf(" edge [%s], distance: %d, cap: %d, vehicles: %d, traffic light? %s\n", e,
+						e.getDistance(),
+						e.getCapacity(),
+						e.getVehicleCount(),
 						e.getTrafficLight() == null ? "false" : "true");
 			}
 		}
