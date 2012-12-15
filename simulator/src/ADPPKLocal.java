@@ -144,7 +144,11 @@ public class ADPPKLocal extends ADPPSmart implements RoutingAlgorithm {
 				}
 			}
 			
-			Message msg = new Message(Message.createRouteMessage(priority.get(v), 0, reservations), v, 0);
+			StringBuilder agg = new StringBuilder("");
+			for (Message tmpm : inbox.get(v))
+				agg.append(tmpm.getMessage());
+			agg.append(Message.createRouteMessage(priority.get(v), 0, reservations));
+			Message msg = new Message(agg.toString(), v, 0);
 			broadcast(v, vehicles, msg, k_hops, broadcast_depth); // HOPS, BROADCAST DEPTH
 		}
 		trafficMonitor.printReport(TrafficMonitor.PrettyPrint.YES);
