@@ -20,13 +20,13 @@ public class SilentSimulationRun {
 			cars.append(io.readLine()+"\n");
 		
 		RoutingAlgorithm[] algos = new RoutingAlgorithm[] { 
-				new RandomRouting(),
-				new SimpleRouting(),
-				new ADPP(),
-				new ADPPSmart(),
-				new LocalShortestPathRouting(),
-				new LocalShortestPathRoutingWithTrafficLights(),
-				new LocalShortestPathRoutingWithTrafficLightsAndReservation(),
+				//new RandomRouting(),
+				//new SimpleRouting(),
+				//new ADPP(),
+				//new ADPPSmart(),
+				//new LocalShortestPathRouting(),
+				//new LocalShortestPathRoutingWithTrafficLights(),
+				//new LocalShortestPathRoutingWithTrafficLightsAndReservation()
 				new ADPPKLocal(3, 1), // depth 3, 1 car hop
 				new ADPPSmartKLocal(3, 1)
 		};

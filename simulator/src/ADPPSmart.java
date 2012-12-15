@@ -65,7 +65,11 @@ public class ADPPSmart extends ADPP implements RoutingAlgorithm {
 				}
 			}
 			
-			Message msg = new Message(Message.createRouteMessage(priority.get(v), 0, reservations), v, 0);
+			StringBuilder agg = new StringBuilder("");
+			for (Message tmpm : inbox.get(v))
+				agg.append(tmpm.getMessage());
+			agg.append(Message.createRouteMessage(priority.get(v), 0, reservations));
+			Message msg = new Message(agg.toString(), v, 0);
 			for (Vehicle vv : vehicles) {
 				if (v != vv && priority.get(v) == priority.get(vv)+1)  
 					sendMessage(v, vv, msg);

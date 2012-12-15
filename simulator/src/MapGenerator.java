@@ -14,9 +14,10 @@ class MapGenerator {
 		io.println(cars);
 		io.close();
 	}
-	public MapGenerator(int width, int height, int vehicles) {
+	public MapGenerator(int width, int height, int vehicles) throws Exception {
 		Kattio io = new Kattio(System.in, System.out);
 		String[][] nodeNames = new String[height*2][width];
+		int safetyMeasure = 1;
 		int app = 0;
 		for (int i = 0; i < height*2; i+=2)
 			for (int j = 0; j < width; j++) 
@@ -33,16 +34,16 @@ class MapGenerator {
 					int trafficLightOffset = rand.nextInt(10);
 					int trafficLightGreenCycle = 1+rand.nextInt(9);
 					int trafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
+					for (int k = 0; k < distance-safetyMeasure; k++) 
+						for (int l = 0; l < capacity-safetyMeasure; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i][j],nodeNames[i][j+1],k));
 					int rdistance = rand.nextInt(10)+1;
 					int rcapacity = rand.nextInt(10)+1;
 					int rtrafficLightOffset = rand.nextInt(10);
 					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
 					int rtrafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < rdistance; k++) 
-						for (int l = 0; l < rcapacity; l++) 
+					for (int k = 0; k < rdistance-safetyMeasure; k++) 
+						for (int l = 0; l < rcapacity-safetyMeasure; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i][j+1],nodeNames[i][j],k));
 					io.print(String.format(" { %d %d %d %d %d } * [ %d %d %d %d %d ] %s", 
 						distance, capacity, trafficLightOffset, trafficLightGreenCycle, trafficLightRedCycle, 
@@ -58,16 +59,16 @@ class MapGenerator {
 					int trafficLightOffset = rand.nextInt(10);
 					int trafficLightGreenCycle = 1+rand.nextInt(9);
 					int trafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
+					for (int k = 0; k < distance-safetyMeasure; k++) 
+						for (int l = 0; l < capacity-safetyMeasure; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i+1][j],nodeNames[i-1][j],k));
 					int rdistance = rand.nextInt(10)+1;
 					int rcapacity = rand.nextInt(10)+1;
 					int rtrafficLightOffset = rand.nextInt(10);
 					int rtrafficLightGreenCycle = 1+rand.nextInt(9);
 					int rtrafficLightRedCycle = 1+rand.nextInt(9);
-					for (int k = 0; k < distance; k++) 
-						for (int l = 0; l < capacity; l++) 
+					for (int k = 0; k < distance-safetyMeasure; k++) 
+						for (int l = 0; l < capacity-safetyMeasure; l++) 
 							startingLocations.add(new StartingLocation(nodeNames[i-1][j],nodeNames[i+1][j],k));
 					io.print(String.format(" { %d %d %d %d %d } * [ %d %d %d %d %d ] ", 
 						distance, capacity, trafficLightOffset, trafficLightGreenCycle, trafficLightRedCycle, 
@@ -79,6 +80,9 @@ class MapGenerator {
 		io.println(vehicles);
 		Collections.shuffle(startingLocations);
 		for (int i = 0; i < vehicles; i++) {
+			if (startingLocations.isEmpty()) {
+				throw new Exception("Could not place all vehicles! ");
+			}
 			StartingLocation tmp = startingLocations.removeFirst();
 			int g = rand.nextInt(width*height);
 			io.println(tmp.aNode + " " + tmp.bNode + " v" + g + " " + tmp.m);
@@ -104,7 +108,7 @@ class MapGenerator {
 			return m;
 		}
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		if (args.length == 0)
 			new MapGenerator();
 		else
