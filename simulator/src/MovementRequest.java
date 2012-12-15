@@ -39,6 +39,7 @@ public class MovementRequest {
 	public MovementRequest (Vehicle vehicle, MovementType type) {
 		this.vehicle = vehicle;
 		this.target = vehicle.getPosition();
+		this.to = vehicle.getMilage();
 		this.type = type;
 	}
 	
@@ -59,7 +60,9 @@ public class MovementRequest {
 	}
 	
 	public void stay () {
-		type = MovementType.STAY;
+		this.type = MovementType.STAY;
+		this.to = vehicle.getMilage();
+		this.target = vehicle.getPosition();
 	}
 
 	public boolean isDefensive () {
