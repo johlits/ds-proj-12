@@ -60,6 +60,8 @@ public class HeatMapRouting extends LocalShortestPathRoutingWithTrafficLights im
 	}
 
 	protected Edge getEdgeAfterSpawn (PathEdge spawn, PathEdge ptr) {
+		if (ptr.getPrev() == null)
+			return ptr.getEdge();
 		path = new Stack<PathEdge>();
 		for (; ptr.getPrev() != spawn; ptr = ptr.getPrev()) path.push(ptr);
 		path.push(ptr);
